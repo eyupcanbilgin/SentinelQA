@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: workforceops
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/workforceops}
+    username: ${DB_USER:workforceops}
+    password: ${DB_PASSWORD:local-postgres-only}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  task:
+    scheduling:
+      pool:
+        size: 2
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+  metrics:
+    tags:
+      application: workforceops
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level traceId=%X{traceId:-} spanId=%X{spanId:-} correlationId=%X{correlationId:-} %logger{36} - %msg%n"
+app:
+  jwt:
+    secret: ${JWT_SECRET:}
+    ttl-seconds: 3600
+  payroll:
+    poll-ms: ${PAYROLL_POLL_MS:1000}
+  defects:
+    enabled: ${DEFECT_SEEDS_ENABLED:false}
+    double-finalize: ${DEFECT_SEED_DOUBLE_FINALIZE:false}
+    slow-payroll: ${DEFECT_SEED_SLOW_PAYROLL:false}
+    wrong-tax: ${DEFECT_SEED_WRONG_TAX:false}
+    bypass-manager-check: ${DEFECT_SEED_BYPASS_MANAGER_CHECK:false}

@@ -1,0 +1,38 @@
+version: 1
+components:
+  authorization:
+    paths: ['backend/src/main/java/**/auth/**', 'backend/src/main/java/**/config/**']
+    impact: 5
+    likelihood: 4
+    rationale: Role or object boundary changes can expose salary data across employees.
+  payroll:
+    paths: ['backend/src/main/java/**/payroll/**']
+    impact: 5
+    likelihood: 4
+    rationale: Financial rounding and immutable finalization affect all employees in a run.
+  leave:
+    paths: ['backend/src/main/java/**/leave/**']
+    impact: 4
+    likelihood: 4
+    rationale: Concurrent approvals can corrupt balances without serialization.
+  employees:
+    paths: ['backend/src/main/java/**/employee/**', 'backend/src/main/java/**/department/**']
+    impact: 4
+    likelihood: 3
+    rationale: Reporting relationships determine authorization and salary inputs.
+  frontend:
+    paths: ['frontend/src/**', 'frontend/index.html']
+    impact: 3
+    likelihood: 2
+    rationale: Critical journeys depend on accessible controls and correct workflow state.
+  quality:
+    paths: ['quality/**', 'quality-intelligence/**', 'quality-gate/**', 'agent-evals/**', 'tests/**', 'backend/src/test/**']
+    impact: 5
+    likelihood: 3
+    rationale: Test or gate changes can reduce confidence in every release decision.
+  documentation:
+    paths: ['docs/**', '*.md', 'LICENSE']
+    impact: 1
+    likelihood: 1
+    rationale: Operational instructions still require command and metadata checks.
+sharedPaths: ['backend/pom.xml', 'backend/src/main/resources/**', 'backend/src/main/java/**/common/**', 'backend/src/main/java/**/WorkforceApplication.java', 'docker-compose.yml', '**/Dockerfile', '**/package*.json', '**/tsconfig*.json', '.github/**', 'scripts/**', 'observability/**', 'performance/**', '.env.example']

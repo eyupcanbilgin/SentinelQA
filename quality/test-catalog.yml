@@ -1,0 +1,682 @@
+{
+  "version": 1,
+  "tests": [
+    {
+      "id": "API-AUTH-001",
+      "name": "valid login grants an own-record token without credential disclosure",
+      "layer": "api",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical",
+        "always"
+      ],
+      "requirements": [
+        "AUTH-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "API-AUTH-002",
+      "name": "invalid credentials return a bounded correlated error",
+      "layer": "api",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTH-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "API-AUTH-003",
+      "name": "a protected endpoint denies a missing token",
+      "layer": "api",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTH-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "API-AUTH-004",
+      "name": "malformed, tampered and correctly signed expired JWTs are denied",
+      "layer": "api",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTH-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-001",
+      "name": "creating own leave reserves inclusive calendar days without spending the balance",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-002",
+      "name": "reversed dates and empty reason cannot create leave or reserve balance",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-003",
+      "name": "insufficient balance rejects the request atomically",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-004",
+      "name": "direct manager approval advances state without consuming leave",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-005",
+      "name": "managers cannot approve their own or unrelated employees",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-006",
+      "name": "HR approval requires manager approval and spends days exactly once",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-007",
+      "name": "rejection releases reserved days without reducing available leave",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-008",
+      "name": "inactive employees cannot submit new leave",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "API-LEAVE-009",
+      "name": "final decisions cannot be changed and clients cannot impersonate leave owners",
+      "layer": "api",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
+    },
+    {
+      "id": "INT-LEAVE-001",
+      "name": "concurrent requests cannot reserve more leave than the available balance",
+      "layer": "integration",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveConcurrencyIT.java"
+    },
+    {
+      "id": "INT-LEAVE-002",
+      "name": "concurrent final approvals consume leave exactly once",
+      "layer": "integration",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveConcurrencyIT.java"
+    },
+    {
+      "id": "QI-SELECT-001",
+      "name": "financial changes select business coverage and baseline",
+      "layer": "quality",
+      "components": [
+        "quality"
+      ],
+      "tags": [
+        "critical",
+        "always"
+      ],
+      "requirements": [
+        "QUALITY-001"
+      ],
+      "source": "quality-intelligence/test/selection.test.ts"
+    },
+    {
+      "id": "QI-SELECT-002",
+      "name": "unknown and shared changes cannot narrow test coverage",
+      "layer": "quality",
+      "components": [
+        "quality"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "QUALITY-001"
+      ],
+      "source": "quality-intelligence/test/selection.test.ts"
+    },
+    {
+      "id": "SEC-AUTHZ-001",
+      "name": "employee can read own record but cannot disclose another employee",
+      "layer": "security",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "SEC-AUTHZ-002",
+      "name": "manager access is limited to own record and direct reports",
+      "layer": "security",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "SEC-AUTHZ-003",
+      "name": "non-admin roles cannot read, create, process or finalize payroll",
+      "layer": "security",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "SEC-AUTHZ-004",
+      "name": "leave requests enforce object access in detail and collection endpoints",
+      "layer": "security",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/AuthApiIT.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-001",
+      "name": "every role can read their own employee record",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-002",
+      "name": "direct-report visibility requires a supervisory role",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-003",
+      "name": "only HR and ADMIN can read unrelated employees",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-004",
+      "name": "no role can approve their own leave at either stage",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-005",
+      "name": "only the assigned manager can perform manager approval",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-006",
+      "name": "unrelated employees cannot receive manager approval",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-AUTHZ-007",
+      "name": "only HR or ADMIN can perform HR approval for another employee",
+      "layer": "unit",
+      "components": [
+        "authorization"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "AUTHZ-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/AccessPolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-001",
+      "name": "inclusive calendar duration includes weekends and leap day",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-002",
+      "name": "missing or reversed dates have a stable domain error",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-003",
+      "name": "exact remaining balance can be requested",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-004",
+      "name": "overdrawing available balance is rejected",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-005",
+      "name": "nonpositive requests cannot bypass balance validation",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-006",
+      "name": "approvals require manager then HR",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-007",
+      "name": "manager approval cannot replay or change a final decision",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-008",
+      "name": "HR cannot bypass manager approval or replay approval",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-009",
+      "name": "either pending stage permits rejection",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-LEAVE-010",
+      "name": "terminal leave decisions are immutable",
+      "layer": "unit",
+      "components": [
+        "leave"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/LeavePolicyTest.java"
+    },
+    {
+      "id": "UNIT-PAY-001",
+      "name": "decimal payroll rounds each deduction HALF_UP before computing net",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollCalculatorTest.java"
+    },
+    {
+      "id": "UNIT-PAY-002",
+      "name": "equivalent valid salary inputs always produce cent-denominated outputs",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollCalculatorTest.java"
+    },
+    {
+      "id": "UNIT-PAY-003",
+      "name": "negative or sub-cent salaries are invalid inputs",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollCalculatorTest.java"
+    },
+    {
+      "id": "UNIT-PAY-004",
+      "name": "only a new or failed payroll run may be processed",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollPolicyTest.java"
+    },
+    {
+      "id": "UNIT-PAY-005",
+      "name": "payroll processing cannot duplicate work or recalculate final payroll",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollPolicyTest.java"
+    },
+    {
+      "id": "UNIT-PAY-006",
+      "name": "a completed payroll run may be finalized",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollPolicyTest.java"
+    },
+    {
+      "id": "UNIT-PAY-007",
+      "name": "unfinished runs and already finalized runs cannot be finalized",
+      "layer": "unit",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/domain/PayrollPolicyTest.java"
+    }
+  ]
+}

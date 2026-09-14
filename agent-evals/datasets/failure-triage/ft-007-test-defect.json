@@ -1,0 +1,18 @@
+{
+  "id": "FT-007",
+  "notes": "Playwright locator failed due to changed UI button label",
+  "expectedClassification": "TEST_DEFECT",
+  "expectedComponent": "frontend-tests",
+  "evidence": {
+    "testId": "E2E-LEAVE-001",
+    "testName": "E2E-LEAVE-001 employee creates leave request",
+    "layer": "e2e",
+    "component": "frontend-tests",
+    "errorMessage": "locator.click: Timeout 5000ms exceeded while waiting for selector \"button.btn-legacy-submit\"",
+    "stackTrace": "Error: locator.click: Timeout 5000ms exceeded.\n  at authenticatedEmployeePage (tests/e2e/fixtures/workforce.ts:45)",
+    "screenshotPath": "artifacts/failures/run-12/E2E-LEAVE-001/screenshot.png",
+    "consoleLogs": [
+      "[INFO] DOM rendered successfully with role button \"Submit Request\""
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+.git
+.tools
+**/node_modules
+**/target
+**/dist
+reports
+artifacts
+.env
+**/test-results
+**/playwright-report

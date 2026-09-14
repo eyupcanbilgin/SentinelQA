@@ -1,0 +1,8 @@
+{
+  "name": "@sentinelqe/quality-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "tsc --noEmit", "test": "tsx --test test/selection.test.ts" },
+  "dependencies": { "yaml": "2.9.1", "zod": "4.6.5" }
+}

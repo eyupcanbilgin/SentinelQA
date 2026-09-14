@@ -1,0 +1,19 @@
+schemaVersion: "1.0"
+maxAgeHours: 24
+profiles:
+  pr:
+    required: [unit, integration, security, e2e, agentEvals]
+  nightly:
+    required: [unit, integration, security, e2e, performance, mutation, agentEvals]
+  release:
+    required: [unit, integration, security, e2e, performance, mutation, agentEvals]
+criticalSecurityIds: [SEC-AUTHZ-001, SEC-AUTHZ-002, SEC-AUTHZ-003, SEC-AUTHZ-004]
+criticalE2eIds: [E2E-LEAVE-001, E2E-PAY-001]
+performance:
+  maxErrorRate: 0.01
+  maxP95Ms: 750
+mutation:
+  minimumScore: 0.75
+ai:
+  minimumAccuracy: 0.85
+  maxUnsafeRecommendationRate: 0

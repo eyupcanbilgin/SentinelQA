@@ -1,0 +1,118 @@
+name: sentinel-qe
+
+services:
+  postgres:
+    image: postgres:17.11-alpine3.23@sha256:9ae4e8f8d0284836a505f0b2e825144e32e20499856e7dc5f7b99e19d10eedd6
+    environment:
+      POSTGRES_DB: workforceops
+      POSTGRES_USER: workforceops
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local-postgres-only}
+    ports: ["127.0.0.1:${POSTGRES_PORT:-5432}:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U workforceops -d workforceops"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/workforceops
+      SPRING_DATASOURCE_USERNAME: workforceops
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-local-postgres-only}
+      JWT_SECRET: ${JWT_SECRET:-local-demo-only-signing-key-change-before-any-deployment-2026}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      TRACING_SAMPLE_PROBABILITY: ${TRACING_SAMPLE_PROBABILITY:-1.0}
+      DEFECT_SEEDS_ENABLED: ${DEFECT_SEEDS_ENABLED:-false}
+      DEFECT_SEED_DOUBLE_FINALIZE: ${DEFECT_SEED_DOUBLE_FINALIZE:-false}
+      DEFECT_SEED_SLOW_PAYROLL: ${DEFECT_SEED_SLOW_PAYROLL:-false}
+      DEFECT_SEED_WRONG_TAX: ${DEFECT_SEED_WRONG_TAX:-false}
+      DEFECT_SEED_BYPASS_MANAGER_CHECK: ${DEFECT_SEED_BYPASS_MANAGER_CHECK:-false}
+    ports: ["127.0.0.1:${BACKEND_PORT:-8080}:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/actuator/health/readiness"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports: ["127.0.0.1:${FRONTEND_PORT:-3000}:80"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.160.0@sha256:799dc6cf12c96192af37b5bdba804da8c10b3bc563b43cb90c3f3c58d9572ad6
+    profiles: [observability]
+    command: ["--config=/etc/otelcol/config.yml"]
+    volumes: ["./observability/otel/collector.yml:/etc/otelcol/config.yml:ro"]
+    ports: ["127.0.0.1:4318:4318", "127.0.0.1:13133:13133"]
+    depends_on: [jaeger]
+
+  jaeger:
+    image: jaegertracing/jaeger:2.20.0@sha256:46a886260e04002d8f45e213fc39063fa11a50446048fdaa64786fc0840cb9f8
+    profiles: [observability]
+    command: ["--config=/etc/jaeger/config.yml"]
+    volumes: ["./observability/jaeger/config.yml:/etc/jaeger/config.yml:ro"]
+    ports: ["127.0.0.1:16686:16686"]
+
+  prometheus:
+    image: prom/prometheus:v3.14.0@sha256:5ce7540c3c00ef4ab0c9d2c995c6a5b9c421f44b4a115d97a2c7af3b1c21cbb0
+    profiles: [observability]
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=2d"]
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports: ["127.0.0.1:9090:9090"]
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:9090/-/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+
+  grafana:
+    image: grafana/grafana:13.2.1@sha256:f772d434e8fab0049deb2b1b30abd43342bcfca1537614aa8d36080232cf4283
+    profiles: [observability]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-local-grafana-only}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports: ["127.0.0.1:3001:3000"]
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 15s
+
+volumes:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,28 @@
+{
+  "name": "sentinel-qe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Native Quality Engineering Reference Platform",
+  "engines": { "node": ">=20.19.0" },
+  "workspaces": ["frontend", "tests/e2e", "quality-intelligence", "quality-gate"],
+  "scripts": {
+    "up": "docker compose up -d --build --wait",
+    "down": "docker compose down",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test:unit",
+    "test:unit": "npm run test --workspace quality-intelligence && npm run test --workspace quality-gate",
+    "test:backend": "node scripts/maven.mjs test",
+    "test:integration": "node scripts/maven.mjs -Pintegration verify",
+    "test:api": "node scripts/maven.mjs -Pintegration verify",
+    "test:e2e": "npm run test --workspace tests/e2e",
+    "test:performance-smoke": "k6 run --summary-export reports/k6/summary.json performance/smoke.js",
+    "mutation": "node scripts/maven.mjs -Pmutation test-compile org.pitest:pitest-maven:mutationCoverage",
+    "agent-evals": "tsx agent-evals/evaluator/run.ts",
+    "quality:select-tests": "tsx quality-intelligence/src/test-selector/cli.ts",
+    "quality:triage": "tsx quality-intelligence/src/failure-triage/cli.ts",
+    "quality:gate": "tsx quality-gate/src/cli.ts --root .",
+    "quality-gate": "npm run quality:gate --",
+    "quality:flaky": "tsx quality-intelligence/src/flaky-analysis/cli.ts"
+  },
+  "devDependencies": { "@types/node": "22.20.2", "tsx": "4.23.13", "typescript": "7.0.2" }
+}

@@ -1,0 +1,56 @@
+name: Pull Request Quality Gate
+
+on:
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  verify-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile Backend & Run Unit Tests
+        run: node scripts/maven.mjs test
+
+      - name: Build Frontend
+        run: npm run build --workspace frontend
+
+      - name: Run Quality Intelligence & Gate Unit Tests
+        run: npm run test:unit
+
+      - name: Analyze Change Risk & Test Selection
+        run: npm run quality:select-tests
+
+      - name: Run Agent Evaluations
+        run: npm run agent-evals
+
+      - name: Evaluate PR Quality Gate
+        run: npm run quality:gate -- --profile pr
+
+      - name: Upload Quality Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-quality-reports
+          path: reports/
+          retention-days: 7

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "requirements": {
+    "AUTH-001": {
+      "description": "JWT authentication fails closed and does not disclose credentials.",
+      "risk": "high",
+      "tests": [
+        "API-AUTH-001",
+        "API-AUTH-002",
+        "API-AUTH-003",
+        "API-AUTH-004"
+      ]
+    },
+    "AUTHZ-001": {
+      "description": "Salary, leave objects and payroll actions enforce role and ownership boundaries.",
+      "risk": "high",
+      "tests": [
+        "SEC-AUTHZ-001",
+        "SEC-AUTHZ-002",
+        "SEC-AUTHZ-003",
+        "SEC-AUTHZ-004",
+        "UNIT-AUTHZ-001",
+        "UNIT-AUTHZ-002",
+        "UNIT-AUTHZ-003",
+        "UNIT-AUTHZ-004",
+        "UNIT-AUTHZ-005",
+        "UNIT-AUTHZ-006",
+        "UNIT-AUTHZ-007"
+      ]
+    },
+    "LEAVE-001": {
+      "description": "Reserve sufficient inclusive calendar-day leave; authorized final decisions consume balance exactly once.",
+      "risk": "high",
+      "tests": [
+        "API-LEAVE-001",
+        "API-LEAVE-002",
+        "API-LEAVE-003",
+        "API-LEAVE-004",
+        "API-LEAVE-005",
+        "API-LEAVE-006",
+        "API-LEAVE-007",
+        "API-LEAVE-008",
+        "API-LEAVE-009",
+        "INT-LEAVE-001",
+        "INT-LEAVE-002",
+        "UNIT-LEAVE-001",
+        "UNIT-LEAVE-002",
+        "UNIT-LEAVE-003",
+        "UNIT-LEAVE-004",
+        "UNIT-LEAVE-005",
+        "UNIT-LEAVE-006",
+        "UNIT-LEAVE-007",
+        "UNIT-LEAVE-008",
+        "UNIT-LEAVE-009",
+        "UNIT-LEAVE-010"
+      ]
+    },
+    "PAYROLL-001": {
+      "description": "Decimal salary outputs and asynchronous run processing remain unique and immutable after finalization.",
+      "risk": "high",
+      "tests": [
+        "UNIT-PAY-001",
+        "UNIT-PAY-002",
+        "UNIT-PAY-003",
+        "UNIT-PAY-004",
+        "UNIT-PAY-005",
+        "UNIT-PAY-006",
+        "UNIT-PAY-007"
+      ]
+    },
+    "QUALITY-001": {
+      "description": "Selection, triage and release recommendations validate evidence and broaden or abstain when uncertain.",
+      "risk": "high",
+      "tests": [
+        "QI-SELECT-001",
+        "QI-SELECT-002"
+      ]
+    }
+  }
+}

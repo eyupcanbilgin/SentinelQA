@@ -1,0 +1,56 @@
+name: Nightly Deep Quality Regression
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  nightly-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Backend Unit Tests
+        run: node scripts/maven.mjs test
+
+      - name: Run PIT Mutation Testing
+        run: npm run mutation
+
+      - name: Run Agent Evaluations on Golden Dataset
+        run: npm run agent-evals
+
+      - name: Run Unit & Gate Validation
+        run: npm run test:unit
+
+      - name: Evaluate Nightly Quality Gate
+        run: npm run quality:gate -- --profile nightly
+
+      - name: Upload Nightly Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-quality-reports
+          path: |
+            reports/
+            backend/target/pit-reports/
+          retention-days: 14

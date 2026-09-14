@@ -1,0 +1,15 @@
+{
+  "id": "FT-009",
+  "notes": "Assertion expecting string instead of integer in JSON schema",
+  "expectedClassification": "TEST_DEFECT",
+  "expectedComponent": "api-tests",
+  "evidence": {
+    "testId": "API-AUTH-002",
+    "testName": "API-AUTH-002 token expiration response structure",
+    "layer": "api",
+    "component": "api-tests",
+    "httpStatus": 200,
+    "errorMessage": "AssertionError: expected: <\"3600\"> but was: <3600>. Type mismatch between String and Integer.",
+    "stackTrace": "java.lang.AssertionError: expected: <\"3600\"> but was: <3600>\n  at io.sentinelqe.workforce.AuthApiIT.verifyTokenExpiry(AuthApiIT.java:42)"
+  }
+}

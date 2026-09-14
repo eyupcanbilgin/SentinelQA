@@ -1,0 +1,12 @@
+version: 1
+model: impact-times-likelihood
+range: [1, 25]
+thresholds: { high: 15, medium: 6 }
+uncertaintyPolicy: Broaden to all catalog tests for unmapped files, shared infrastructure, or quality-system changes.
+factors:
+  businessImpact: salary correctness and lost leave balance
+  likelihood: concurrency and multi-stage workflow complexity
+  financialSensitivity: payroll always high impact
+  securitySensitivity: authorization always high impact
+  blastRadius: migrations, shared configuration and quality tooling select all tests
+  history: no production failure history exists; likelihood is an explicit engineering prior

@@ -1,0 +1,28 @@
+extensions:
+  jaeger_storage:
+    backends:
+      local_memory:
+        memory:
+          max_traces: 10000
+  jaeger_query:
+    storage:
+      traces: local_memory
+    http:
+      endpoint: 0.0.0.0:16686
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+processors:
+  batch:
+exporters:
+  jaeger_storage_exporter:
+    trace_storage: local_memory
+service:
+  extensions: [jaeger_storage, jaeger_query]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger_storage_exporter]

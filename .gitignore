@@ -1,0 +1,17 @@
+node_modules/
+**/target/
+**/dist/
+**/*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.tools/
+artifacts/
+reports/
+**/test-results/
+**/playwright-report/
+*.log
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

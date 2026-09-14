@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "AI-Native Quality Engineering Reference Platform",
+  "description": "Evidence-Backed Quality Engineering Reference Platform",
   "engines": { "node": ">=20.19.0" },
   "workspaces": ["frontend", "tests/e2e", "quality-intelligence", "quality-gate"],
   "scripts": {
@@ -20,6 +20,7 @@
     "test:performance-baseline": "node scripts/run-k6.mjs baseline",
     "perf:smoke": "node scripts/run-k6.mjs smoke",
     "perf:baseline": "node scripts/run-k6.mjs baseline",
+    "test:observability": "tsx scripts/verify-observability.ts",
     "mutation": "node scripts/maven.mjs -Pmutation test-compile org.pitest:pitest-maven:mutationCoverage",
     "agent-evals": "tsx agent-evals/evaluator/run.ts",
     "agent-evals:holdout": "tsx agent-evals/evaluator/run.ts --dataset holdout",

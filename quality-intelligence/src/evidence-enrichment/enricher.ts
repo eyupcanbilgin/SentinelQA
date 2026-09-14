@@ -57,34 +57,40 @@ export async function fetchJaegerTrace(
   jaegerBaseUrl: string = process.env.JAEGER_URL || 'http://localhost:16686'
 ): Promise<TraceSummary | null> {
   try {
-    // Search traces with correlationId tag
-    const queryUrl = `${jaegerBaseUrl}/api/traces?service=workforceops&tags=${encodeURIComponent(
-      JSON.stringify({ correlationId })
-    )}&limit=1`;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
-
-    const res = await fetch(queryUrl, { signal: controller.signal });
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      return null;
-    }
-
-    const data = (await res.json()) as {
-      data?: Array<{
-        traceID: string;
-        spans: Array<{
-          spanID: string;
-          operationName: string;
-          duration: number; // microseconds
-          tags: Array<{ key: string; value: unknown }>;
-        }>;
-      }>;
+    // Search traces with canonical correlation.id tag, falling back to correlationId
+    const searchJaeger = async (tagKey: string) => {
+      const queryUrl = `${jaegerBaseUrl}/api/traces?service=workforceops&tags=${encodeURIComponent(
+        JSON.stringify({ [tagKey]: correlationId })
+      )}&limit=1`;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      try {
+        const res = await fetch(queryUrl, { signal: controller.signal });
+        if (!res.ok) return null;
+        return (await res.json()) as {
+          data?: Array<{
+            traceID: string;
+            spans: Array<{
+              spanID: string;
+              operationName: string;
+              duration: number;
+              tags: Array<{ key: string; value: unknown }>;
+            }>;
+          }>;
+        };
+      } catch {
+        return null;
+      } finally {
+        clearTimeout(timeout);
+      }
     };
 
-    if (!data.data || data.data.length === 0) {
+    let data = await searchJaeger('correlation.id');
+    if (!data?.data || data.data.length === 0) {
+      data = await searchJaeger('correlationId');
+    }
+
+    if (!data || !data.data || data.data.length === 0) {
       return null;
     }
 

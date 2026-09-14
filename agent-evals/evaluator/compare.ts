@@ -31,7 +31,7 @@ async function runComparison() {
       { cwd: ROOT, encoding: 'utf8', shell: true }
     );
     const summary = JSON.parse(
-      await readFile(path.join(ROOT, 'reports/agent-evals/triage-summary.json'), 'utf8')
+      await readFile(path.join(ROOT, 'reports/agent-evals/holdout-summary.json'), 'utf8')
     );
     rows.push({
       provider: 'Rule Baseline (Holdout)',
@@ -59,7 +59,7 @@ async function runComparison() {
         { cwd: ROOT, encoding: 'utf8', shell: true }
       );
       const summary = JSON.parse(
-        await readFile(path.join(ROOT, 'reports/agent-evals/triage-summary.json'), 'utf8')
+        await readFile(path.join(ROOT, 'reports/agent-evals/holdout-summary.json'), 'utf8')
       );
       rows.push({
         provider: 'LLM Triage (v1 Prompt)',

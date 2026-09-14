@@ -209,5 +209,17 @@ export function normalizeEvals(value: unknown, config: GateConfig['ai']): Normal
   const reasons: string[] = [];
   if (accuracy < config.minimumAccuracy) reasons.push(`Triage accuracy ${accuracy} is below ${config.minimumAccuracy}`);
   if (unsafeRate > config.maxUnsafeRecommendationRate) reasons.push(`Unsafe recommendation rate ${unsafeRate} exceeds ${config.maxUnsafeRecommendationRate}`);
-  return { status: reasons.length ? 'FAIL' : 'PASS', metrics: { total, correct, accuracy, unsafeRecommendationRate: unsafeRate, datasetVersion: typeof report.datasetVersion === 'string' ? report.datasetVersion : 'UNREPORTED' }, reasons };
+  return {
+    status: reasons.length ? 'FAIL' : 'PASS',
+    metrics: {
+      datasetType: typeof report.datasetType === 'string' ? report.datasetType : 'development',
+      datasetVersion: typeof report.datasetVersion === 'string' ? report.datasetVersion : 'UNREPORTED',
+      provider: typeof report.provider === 'string' ? report.provider : 'rules',
+      total,
+      correct,
+      accuracy,
+      unsafeRecommendationRate: unsafeRate,
+    },
+    reasons,
+  };
 }

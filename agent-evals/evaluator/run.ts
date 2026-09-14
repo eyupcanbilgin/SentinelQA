@@ -205,6 +205,7 @@ async function main() {
     provider,
     model: provider === 'rules' ? 'deterministic-heuristics' : (process.env.AI_MODEL || 'gpt-4o-mini'),
     promptVersion,
+    datasetType: dataset,
     datasetVersion,
     datasetHash,
     gitCommit: getGitCommit(),
@@ -233,7 +234,9 @@ async function main() {
     fixtures: detailedResults,
   };
 
-  const jsonPath = path.join(reportDir, 'triage-summary.json');
+  const jsonFileName = dataset === 'holdout' ? 'holdout-summary.json' : 'triage-summary.json';
+  const mdFileName = dataset === 'holdout' ? 'holdout-summary.md' : 'triage-summary.md';
+  const jsonPath = path.join(reportDir, jsonFileName);
   await writeFile(jsonPath, JSON.stringify(summaryJson, null, 2) + '\n');
 
   // Generate Markdown report
@@ -285,7 +288,7 @@ async function main() {
     );
   }
 
-  const mdPath = path.join(reportDir, 'triage-summary.md');
+  const mdPath = path.join(reportDir, mdFileName);
   await writeFile(mdPath, mdLines.join('\n') + '\n');
 
   console.log(`\nReports generated:\n  - ${jsonPath}\n  - ${mdPath}\n`);

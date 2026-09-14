@@ -1,0 +1,17 @@
+{
+  "id": "FT-016",
+  "notes": "Service unavailable due to upstream DNS lookup error",
+  "expectedClassification": "ENVIRONMENT",
+  "expectedComponent": "infrastructure",
+  "evidence": {
+    "testId": "API-HEALTH-001",
+    "testName": "API-HEALTH-001 health check probe",
+    "layer": "api",
+    "component": "infrastructure",
+    "httpStatus": 503,
+    "errorMessage": "FetchError: request to http://backend:8080/actuator/health failed, reason: getaddrinfo ENOTFOUND backend (service unavailable)",
+    "networkLogs": [
+      "GET http://backend:8080/actuator/health -> ENOTFOUND"
+    ]
+  }
+}

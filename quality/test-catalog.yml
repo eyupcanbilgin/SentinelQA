@@ -198,6 +198,128 @@
       "source": "backend/src/test/java/io/sentinelqe/workforce/LeaveApiIT.java"
     },
     {
+      "id": "API-PAY-001",
+      "name": "admin creates an empty payroll run for a valid period",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "API-PAY-002",
+      "name": "invalid and duplicate periods do not create additional runs",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "API-PAY-003",
+      "name": "accepted payroll processing completes asynchronously with one item per active employee",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "API-PAY-004",
+      "name": "deterministic decimal amounts round correctly and total equals sum of net items",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "API-PAY-005",
+      "name": "a second finalization is rejected and cannot duplicate or modify payroll items",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "API-PAY-006",
+      "name": "finalization requires completion and recalculation is forbidden",
+      "layer": "api",
+      "components": [
+        "payroll"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/PayrollApiIT.java"
+    },
+    {
+      "id": "E2E-LEAVE-001",
+      "name": "employee → manager → HR approval debits balance exactly once",
+      "layer": "e2e",
+      "components": [
+        "leave",
+        "frontend"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "LEAVE-001"
+      ],
+      "source": "tests/e2e/specs/leave.spec.ts"
+    },
+    {
+      "id": "E2E-PAY-001",
+      "name": "admin processes payroll, reviews exact amounts, and finalizes immutable items",
+      "layer": "e2e",
+      "components": [
+        "payroll",
+        "frontend"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "PAYROLL-001"
+      ],
+      "source": "tests/e2e/specs/payroll.spec.ts"
+    },
+    {
       "id": "INT-LEAVE-001",
       "name": "concurrent requests cannot reserve more leave than the available balance",
       "layer": "integration",
@@ -246,6 +368,21 @@
     {
       "id": "QI-SELECT-002",
       "name": "unknown and shared changes cannot narrow test coverage",
+      "layer": "quality",
+      "components": [
+        "quality"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "QUALITY-001"
+      ],
+      "source": "quality-intelligence/test/selection.test.ts"
+    },
+    {
+      "id": "QI-SELECT-003",
+      "name": "AI cannot remove deterministic tests or downgrade risk",
       "layer": "quality",
       "components": [
         "quality"

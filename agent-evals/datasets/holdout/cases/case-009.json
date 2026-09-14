@@ -1,0 +1,15 @@
+{
+  "id": "case-009",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "INT-SYS-001",
+    "testName": "systemIntegrationStress",
+    "errorMessage": "Test failed with multiple conflicting signals: timeout in test assertion, network drop, and dirty state warning",
+    "component": "unknown",
+    "backendLogs": [
+      "WARN o.a.c.c.C.[Tomcat] - Memory threshold high (88%)",
+      "ERROR i.s.w.common.CorrelationFilter - Connection reset by peer mid-stream"
+    ],
+    "layer": "integration"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "FT-014",
+  "notes": "Docker container killed by OOM killer",
+  "expectedClassification": "ENVIRONMENT",
+  "expectedComponent": "infrastructure",
+  "evidence": {
+    "testId": "INT-POSTGRES-001",
+    "testName": "INT-POSTGRES-001 flyway migration execution",
+    "layer": "integration",
+    "component": "infrastructure",
+    "errorMessage": "TestcontainersException: Container docker.io/postgres:16-alpine died with exit code 137 (OOMKilled)",
+    "backendLogs": [
+      "[ERROR] docker engine terminated container: Out of Memory (host unreachable)"
+    ]
+  }
+}

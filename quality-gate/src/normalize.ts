@@ -134,15 +134,19 @@ export function normalizePlaywright(value: unknown, requiredIds: string[]): Norm
 }
 export function normalizeK6(value: unknown, config: GateConfig['performance']): Normalized {
   const metrics = object(object(value, 'k6 report').metrics, 'k6 metrics');
-  const values = (name: string): Obj => object(object(metrics[name], name).values, `${name}.values`);
+  const values = (name: string): Obj => {
+    const m = object(metrics[name], name);
+    if (m.values && typeof m.values === 'object') return m.values as Obj;
+    return m;
+  };
   const requests = count(values('http_reqs').count, 'http_reqs.count');
   if (!requests) throw new Error('k6 report contains zero requests');
-  const errorRate = finite(values('http_req_failed').rate, 'http_req_failed.rate', 0, 1);
+  const errorRate = finite(values('http_req_failed').rate !== undefined ? values('http_req_failed').rate : values('http_req_failed').value, 'http_req_failed.rate', 0, 1);
   const p95Ms = finite(values('http_req_duration')['p(95)'], 'http_req_duration.p(95)');
   const checks = values('checks');
   const checksPassed = count(checks.passes, 'checks.passes');
   const checksFailed = count(checks.fails, 'checks.fails');
-  const checkRate = finite(checks.rate, 'checks.rate', 0, 1);
+  const checkRate = finite(checks.rate !== undefined ? checks.rate : checks.value, 'checks.rate', 0, 1);
   if (!checksPassed && !checksFailed) throw new Error('k6 report has zero checks');
   if (Math.abs(checkRate - checksPassed / (checksPassed + checksFailed)) > 1e-8) throw new Error('k6 check rate contradicts counts');
   const reasons: string[] = [];
@@ -154,10 +158,18 @@ export function normalizeK6(value: unknown, config: GateConfig['performance']): 
     const metric = object(raw, `metric ${name}`);
     if (metric.thresholds === undefined) continue;
     for (const [expression, rawThreshold] of Object.entries(object(metric.thresholds, 'thresholds'))) {
-      const threshold = object(rawThreshold, 'threshold');
-      if (typeof threshold.ok !== 'boolean') throw new Error(`Threshold ${name}/${expression} has no boolean ok`);
+      let ok: boolean;
+      if (typeof rawThreshold === 'boolean') {
+        // In k6 summary-export JSON: false indicates no failure / threshold passed; true indicates threshold breached.
+        // Or if object: { ok: boolean }
+        ok = !rawThreshold;
+      } else if (typeof rawThreshold === 'object' && rawThreshold !== null && typeof (rawThreshold as { ok?: unknown }).ok === 'boolean') {
+        ok = (rawThreshold as { ok: boolean }).ok;
+      } else {
+        throw new Error(`Threshold ${name}/${expression} has unexpected format`);
+      }
       thresholds++;
-      if (!threshold.ok) reasons.push(`k6 threshold failed: ${name} ${expression}`);
+      if (!ok) reasons.push(`k6 threshold failed: ${name} ${expression}`);
     }
   }
   if (!thresholds) throw new Error('k6 summary has no evaluated thresholds');

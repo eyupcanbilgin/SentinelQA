@@ -1,0 +1,17 @@
+{
+  "id": "case-006",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "INT-LEAVE-001",
+    "testName": "concurrentLeaveReservations",
+    "errorMessage": "could not execute statement [ERROR: deadlock detected in process 4811] [update leave_balances set available_days...]",
+    "httpStatus": 500,
+    "component": "leave",
+    "retryHistory": {
+      "attemptCount": 2,
+      "passedOnRetry": true,
+      "intermittent": true
+    },
+    "layer": "integration"
+  }
+}

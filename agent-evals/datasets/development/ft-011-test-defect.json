@@ -1,0 +1,14 @@
+{
+  "id": "FT-011",
+  "notes": "Playwright modal overlay closed unexpectedly before click",
+  "expectedClassification": "TEST_DEFECT",
+  "expectedComponent": "frontend-tests",
+  "evidence": {
+    "testId": "E2E-LEAVE-002",
+    "testName": "E2E-LEAVE-002 manager approves direct report request",
+    "layer": "e2e",
+    "component": "frontend-tests",
+    "errorMessage": "locator.click: target closed while waiting for element \"dialog >> button.confirm\"",
+    "stackTrace": "Error: locator.click: target closed\n  at tests/e2e/specs/leave.spec.ts:77"
+  }
+}

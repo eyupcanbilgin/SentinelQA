@@ -13,7 +13,9 @@ test('E2E-PAY-001 admin processes payroll, reviews exact amounts, and finalizes 
   await expect(page.getByRole('button', { name: 'Payroll', exact: true })).toHaveCount(0);
   const token = await loginAs('admin');
   await page.getByRole('button', { name: 'Payroll', exact: true }).click();
-  const period = process.env.E2E_PAYROLL_PERIOD ?? '2035-04';
+  const randomYear = 2030 + Math.floor(Math.random() * 60);
+  const randomMonth = String(1 + Math.floor(Math.random() * 12)).padStart(2, '0');
+  const period = process.env.E2E_PAYROLL_PERIOD ?? `${randomYear}-${randomMonth}`;
   await page.getByLabel('Payroll period', { exact: true }).fill(period);
   await page.getByRole('button', { name: 'Create payroll run', exact: true }).click();
   const row = page.getByRole('table', { name: 'Payroll runs', exact: true }).getByRole('row').filter({ hasText: period });

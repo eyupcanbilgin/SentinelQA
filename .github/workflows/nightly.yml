@@ -30,27 +30,66 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Start Evidence Run Manifest
+        run: npm run quality:start-run
+
+      - name: Verify Quality Catalog Consistency
+        run: npm run catalog:verify
+
       - name: Run Backend Unit Tests
         run: node scripts/maven.mjs test
+
+      - name: Run Quality Intelligence & Gate Unit Tests
+        run: npm run test:unit
 
       - name: Run PIT Mutation Testing
         run: npm run mutation
 
-      - name: Run Agent Evaluations on Golden Dataset
+      - name: Run Integration, API & Security Tests (PostgreSQL Testcontainers)
+        run: node scripts/maven.mjs -Pintegration verify
+
+      - name: Start Application Platform Stack
+        run: npm run up
+
+      - name: Install Playwright Chromium Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Critical Playwright E2E Regression
+        run: npm run test:e2e
+
+      - name: Run Reference k6 Performance Smoke Test
+        run: npm run perf:smoke
+
+      - name: Run Agent Evaluations on Development Dataset
         run: npm run agent-evals
 
-      - name: Run Unit & Gate Validation
-        run: npm run test:unit
+      - name: Run Independent Holdout Benchmark
+        run: npm run agent-evals:holdout
+
+      - name: Run Change-Impact Test Selection Benchmark
+        run: npm run quality:benchmark-selection
+
+      - name: Run Guarded Healer Safety Benchmark
+        run: npm run quality:benchmark-healer
 
       - name: Evaluate Nightly Quality Gate
         run: npm run quality:gate -- --profile nightly
 
-      - name: Upload Nightly Reports
+      - name: Publish Step Summary
+        if: always()
+        run: |
+          if [ -f reports/quality-gate.md ]; then
+            cat reports/quality-gate.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload Nightly Reports & Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nightly-quality-reports
           path: |
             reports/
+            backend/target/surefire-reports/
+            backend/target/failsafe-reports/
             backend/target/pit-reports/
           retention-days: 14

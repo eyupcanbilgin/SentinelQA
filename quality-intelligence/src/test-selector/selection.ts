@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const catalogSchema = z.object({ version: z.literal(1), tests: z.array(z.object({
-  id: z.string().regex(/^[A-Z]+-[A-Z]+-\d{3}$/), name: z.string().min(1),
+  id: z.string().regex(/^[A-Z0-9]+-[A-Z]+-\d{3}$/), name: z.string().min(1),
   layer: z.enum(['unit', 'integration', 'api', 'e2e', 'performance', 'security', 'quality']),
   components: z.array(z.string()).min(1), tags: z.array(z.string()),
   requirements: z.array(z.string()).min(1), source: z.string().min(1),
@@ -54,3 +54,97 @@ export function selectTests(changedFiles: string[], rawCatalog: unknown, rawMap:
       [...affected].map(c => mapping.components[c].rationale),
   };
 }
+
+export interface TestPlan {
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  runBroaderSuite: boolean;
+  selectedTestIds: string[];
+  requiredLayers: string[];
+  reasons: Record<string, string[]>;
+}
+
+export function generateTestPlan(selectionResult: ReturnType<typeof selectTests>): TestPlan {
+  const reasons: Record<string, string[]> = {};
+  for (const test of selectionResult.selectedTests) {
+    reasons[test.id] = test.reasons;
+  }
+  return {
+    riskLevel: selectionResult.riskLevel,
+    runBroaderSuite: selectionResult.runBroaderSuite,
+    selectedTestIds: selectionResult.selectedTests.map(t => t.id),
+    requiredLayers: selectionResult.requiredSuites,
+    reasons,
+  };
+}
+
+export interface AiRiskEnrichment {
+  additionalComponents?: string[];
+  additionalTestIds?: string[];
+  recommendedRiskLevel?: 'LOW' | 'MEDIUM' | 'HIGH';
+  rationale?: string;
+  suggestedRemovals?: string[];
+}
+
+export function enrichPlanWithAi(
+  deterministicPlan: TestPlan,
+  aiProposal: AiRiskEnrichment
+): {
+  plan: TestPlan;
+  safetyViolations: string[];
+} {
+  const safetyViolations: string[] = [];
+  const deterministicSet = new Set(deterministicPlan.selectedTestIds);
+
+  if (aiProposal.suggestedRemovals && aiProposal.suggestedRemovals.length > 0) {
+    const attemptedRemovals = aiProposal.suggestedRemovals.filter(id => deterministicSet.has(id));
+    if (attemptedRemovals.length > 0) {
+      safetyViolations.push(
+        `Safety Violation: AI attempted to remove ${attemptedRemovals.length} deterministic required test(s): ${attemptedRemovals.join(', ')}. Blocked by safety invariant.`
+      );
+    }
+  }
+
+  const combinedTestIds = new Set(deterministicPlan.selectedTestIds);
+  if (aiProposal.additionalTestIds) {
+    for (const id of aiProposal.additionalTestIds) {
+      combinedTestIds.add(id);
+    }
+  }
+
+  const riskRanks: Record<'LOW' | 'MEDIUM' | 'HIGH', number> = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+  let effectiveRisk = deterministicPlan.riskLevel;
+  if (aiProposal.recommendedRiskLevel) {
+    const aiRank = riskRanks[aiProposal.recommendedRiskLevel];
+    const detRank = riskRanks[deterministicPlan.riskLevel];
+    if (aiRank < detRank) {
+      safetyViolations.push(
+        `Safety Violation: AI attempted to downgrade deterministic risk from ${deterministicPlan.riskLevel} to ${aiProposal.recommendedRiskLevel}. Preserving deterministic risk.`
+      );
+    } else if (aiRank > detRank) {
+      effectiveRisk = aiProposal.recommendedRiskLevel;
+    }
+  }
+
+  const enrichedReasons = { ...deterministicPlan.reasons };
+  if (aiProposal.additionalTestIds && aiProposal.rationale) {
+    for (const id of aiProposal.additionalTestIds) {
+      if (!enrichedReasons[id]) {
+        enrichedReasons[id] = [`AI recommendation: ${aiProposal.rationale}`];
+      } else {
+        enrichedReasons[id] = [...enrichedReasons[id], `AI recommendation: ${aiProposal.rationale}`];
+      }
+    }
+  }
+
+  return {
+    plan: {
+      riskLevel: effectiveRisk,
+      runBroaderSuite: deterministicPlan.runBroaderSuite,
+      selectedTestIds: [...combinedTestIds].sort(),
+      requiredLayers: deterministicPlan.requiredLayers,
+      reasons: enrichedReasons,
+    },
+    safetyViolations,
+  };
+}
+

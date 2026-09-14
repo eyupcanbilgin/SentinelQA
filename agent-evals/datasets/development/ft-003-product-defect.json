@@ -1,0 +1,16 @@
+{
+  "id": "FT-003",
+  "notes": "Leave balance underflow without reservation lock",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "leave",
+  "evidence": {
+    "testId": "INT-LEAVE-003",
+    "testName": "INT-LEAVE-003 concurrent requests cannot overspend leave balance",
+    "layer": "integration",
+    "component": "leave",
+    "httpStatus": 500,
+    "errorMessage": "DomainException: leave balance underflow. Balance fell below zero: -2 days",
+    "stackTrace": "io.sentinelqe.workforce.common.DomainException: leave balance underflow\n  at io.sentinelqe.workforce.leave.LeaveService.approve(LeaveService.java:84)",
+    "correlationId": "req-leave-underflow-1"
+  }
+}

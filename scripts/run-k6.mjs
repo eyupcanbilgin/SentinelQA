@@ -4,6 +4,11 @@ import path from 'node:path';
 
 const scenario = process.argv[2] || 'smoke';
 mkdirSync('reports/k6', { recursive: true });
+try {
+  chmodSync('reports/k6', 0o777);
+} catch {
+  // Ignore permission error on Windows
+}
 
 function hasLocalK6() {
   try {
@@ -39,6 +44,8 @@ if (hasLocalK6()) {
         'perf',
         'run',
         '--rm',
+        '--user',
+        '0:0',
         'k6',
         'run',
         '--summary-export=/reports/k6/summary.json',

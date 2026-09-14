@@ -61,6 +61,7 @@ services:
   k6:
     image: grafana/k6:0.57.0
     profiles: [perf]
+    user: "0:0"
     volumes:
       - ./performance:/performance:ro
       - ./reports/k6:/reports/k6

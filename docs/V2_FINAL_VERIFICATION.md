@@ -10,8 +10,8 @@ This matrix documents the verification status of every major capability in Senti
 
 | Capability / Workflow | Scope / Execution Mechanism | Status | Evidence Artifact | Technical Notes & Defensibility |
 | :--- | :--- | :---: | :--- | :--- |
-| **PR GitHub Actions Workflow** | GitHub Actions (`pr.yml` on Ubuntu) | **VERIFIED_GITHUB** | Run `34824943028` (green) | All 17 job checks passed on GitHub runner, evaluating mandatory PR profile. |
-| **Nightly GitHub Actions Workflow** | GitHub Actions (`nightly.yml` on Ubuntu) | **VERIFIED_GITHUB** | GitHub Run ID recorded below | Evaluates full heavy pipeline: unit, integration, E2E, k6, mutation, evals, and nightly gate. |
+| **PR GitHub Actions Workflow** | GitHub Actions (`pr.yml` on Ubuntu) | **VERIFIED_GITHUB** | Run `34836578931` (green) | All checks passed on GitHub runner, evaluating mandatory PR profile (PASS). |
+| **Nightly GitHub Actions Workflow** | GitHub Actions (`nightly.yml` on Ubuntu) | **VERIFIED_GITHUB** | Run `34836578933` (green) | Full deep regression executed in 3m37s; evaluated nightly profile (PASS). |
 | **Release GitHub Actions Workflow** | GitHub Actions (`release.yml`) | **IMPLEMENTED_NOT_VERIFIED** | `.github/workflows/release.yml` | Implemented and validated; unexecuted to avoid external release side effects. |
 | **Real Jaeger Correlation Loop** | OpenTelemetry + Micrometer + Jaeger | **VERIFIED_LOCAL** | `reports/observability/live-proof.json` | Authenticated request binds `correlation.id` to span; verified via `npm run test:observability`. |
 | **Patch Safety Validator** | Diff-aware syntactic & safety guardrails | **VERIFIED_LOCAL** | `reports/healer-benchmark/benchmark.json` | 8/8 proposals; 100% rejection of assertion weakening, skips, and prod edits; human review required. |
@@ -38,12 +38,13 @@ This matrix documents the verification status of every major capability in Senti
    - Starts run manifest with `npm run quality:start-run`.
    - Executes only mandatory PR suites: backend unit, quality unit, catalog verification, integration & security, Playwright E2E, and agent regression suite.
    - Evaluates `npm run quality:gate -- --profile pr`.
-   - Verified on GitHub Actions runner (`VERIFIED_GITHUB`).
+   - Verified on GitHub Actions runner (`VERIFIED_GITHUB`, Run `34836578931`, conclusion: `success`, decision: `PASS`).
 
 2. **`nightly.yml` (Nightly Deep Quality Regression)**:
    - Starts run manifest with `npm run quality:start-run` before all test suites.
    - Executes complete heavy pipeline: unit, integration, mutation testing (PITest), live full-stack Playwright E2E, containerized k6 performance smoke, agent regression suite, and holdout benchmark.
    - Evaluates `npm run quality:gate -- --profile nightly`.
+   - Verified on GitHub Actions runner (`VERIFIED_GITHUB`, Run `34836578933`, duration: 3m37s, conclusion: `success`, decision: `PASS`).
    - Triggerable manually via `workflow_dispatch` and daily at 02:00 UTC.
 
 3. **`release.yml` (Release Promotion Gate)**:

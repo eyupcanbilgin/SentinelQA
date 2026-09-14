@@ -76,15 +76,50 @@ curl -s -X POST "http://localhost:8080/api/payroll-runs/${RUN_ID}/process" \
 ```
 
 ### Step 3: Verify Telemetry in Jaeger
-Query the Jaeger REST API to confirm trace collection:
+Query the Jaeger REST API to confirm trace collection using the canonical `correlation.id` tag (or fallback `correlationId`):
 
 ```bash
-curl -s "http://localhost:16686/api/traces?service=workforceops&tags=%7B%22correlationId%22%3A%22${CORRELATION_ID}%22%7D" | jq .
+curl -s "http://localhost:16686/api/traces?service=workforceops&tags=%7B%22correlation.id%22%3A%22${CORRELATION_ID}%22%7D" | jq .
 ```
 
-### Step 4: Enrich Failure Evidence Bundle
-Given a test failure evidence artifact containing this `correlationId`:
+### Step 4: Automated Live Observability Verification
+SentinelQA provides a standalone verification script that authenticates, executes a correlated request, polls Jaeger, verifies span attributes, enriches failure evidence, and produces machine-readable proof:
 
+```bash
+npm run test:observability
+```
+
+Verified Execution Output:
+```text
+=== SentinelQA Live Observability & Jaeger Round-Trip Verification ===
+Backend URL: http://localhost:8080
+Jaeger URL:  http://localhost:16686
+
+Services verified healthy.
+1. Authenticating as employee1@example.test...
+2. Sending HTTP request with X-Correlation-ID: corr-verify-1789383210899...
+   Response 200 OK. Backend confirmed X-Correlation-ID: corr-verify-1789383210899
+3. Polling Jaeger for span with correlation.id...
+   Trace found on attempt 5! Trace ID: 57388165580c55ba641bedc146bad4b3
+4. Executing Evidence Enricher against live Jaeger...
+   Enriched successfully! Telemetry source: jaeger
+   Root span: security filterchain before (8ms)
+   Span count: 6
+5. Machine-readable proof recorded: reports/observability/live-proof.json
+
+✅ Real End-to-End Observability & Jaeger Round-Trip VERIFIED!
+```
+
+The machine-readable result is recorded in `reports/observability/live-proof.json` with actual trace ID, span details, and timestamp.
+
+---
+
+## Illustrative Example: Async Failure Triage Flow
+
+> [!NOTE]
+> The following scenario is an **illustrative walkthrough** showing how async failure evidence bundles interact with the enricher and triage engine when an SLA breach occurs.
+
+### Input Bundle (`sample-failure.json`)
 ```json
 {
   "schemaVersion": "1.0",
@@ -93,29 +128,26 @@ Given a test failure evidence artifact containing this `correlationId`:
   "layer": "api",
   "component": "payroll",
   "errorMessage": "Payroll processing SLA breached: run remained in PROCESSING state beyond deadline",
-  "correlationId": "demo-trace-1726308000",
+  "correlationId": "demo-trace-illustrative-001",
   "httpStatus": 202
 }
 ```
 
-Run the evidence enricher to fetch telemetry and redact credentials:
-
+### Enriching Telemetry
 ```bash
 npm run quality:enrich-evidence -- reports/failures/sample-failure.json --output reports/failures/enriched-failure.json
 ```
 
-Output:
+*(Illustrative Output)*:
 ```text
-Enriching evidence for test: API-PAY-003 (correlationId: demo-trace-1726308000)
-✅ Retrieved trace 4a82b9c1d092 from Jaeger (4 spans)
+Enriching evidence for test: API-PAY-003 (correlationId: demo-trace-illustrative-001)
+✅ Retrieved trace from Jaeger (4 spans)
    Root span: POST /api/payroll-runs/{id}/process (duration: 3820ms)
 🔒 Redacted 0 sensitive token/credential match(es).
 Enriched evidence saved to: reports/failures/enriched-failure.json
 ```
 
-### Step 5: Run Failure Triage on Enriched Evidence
-Execute the triage engine with the enriched evidence:
-
+### Running Triage
 ```bash
 npm run quality:triage -- reports/failures/enriched-failure.json
 ```
@@ -123,7 +155,7 @@ npm run quality:triage -- reports/failures/enriched-failure.json
 The triage assistant outputs a schema-validated classification:
 - Classification: `PRODUCT_DEFECT` or `ENVIRONMENT`
 - Confidence: `0.91`
-- Evidence: Includes exact Jaeger trace ID, failing span name, span duration, and HTTP status code.
+- Evidence: Includes Jaeger trace ID, failing span name, span duration, and HTTP status code.
 - Recommended Owner: `backend`
 - Recommended Next Action: "Inspect correlated backend logs and trace IDs around timestamp; patch domain service logic."
 

@@ -2,7 +2,7 @@
 
 **Evidence-Backed Quality Engineering Reference Platform**
 
-SentinelQA is an evidence-first Quality Engineering reference platform demonstrating deterministic test selection, risk-based automation, observability-linked failure triage, performance regression monitoring, mutation testing, and cryptographic run-manifest quality gates.
+SentinelQA is an evidence-first Quality Engineering reference platform demonstrating deterministic test selection, risk-based automation, observability-linked failure triage, performance regression monitoring, mutation testing, and run-bound evidence quality gates.
 
 The platform is designed around a single core engineering principle:
 > **Deterministic rules establish minimum safe coverage. AI may add tests or enrich analysis, but AI is never permitted to subtract tests, downgrade risk, or override quality gates.**
@@ -13,9 +13,9 @@ The platform is designed around a single core engineering principle:
 
 | Capability | Deterministic Foundation | AI-Assisted Capability | Strict Safety Boundary |
 | :--- | :--- | :--- | :--- |
-| **Test Selection** | Component mapping via Git diff; minimum test set; risk floor | Semantic change-risk enrichment; domain broadening | **AI cannot remove deterministic tests or lower risk** |
+| **Test Selection** | Component mapping via Git diff; minimum test plan recommendation; risk floor | Semantic change-risk enrichment; domain broadening | **AI cannot remove deterministic tests or lower risk; PR CI retains mandatory safety suites** |
 | **Failure Triage** | Rule-based triage baseline; normalized schema; correlation ID linking | Optional LLM classification (`gpt-4o-mini`, etc.) | **Untrusted data treated strictly as data; prompt injection resisted** |
-| **Test Repair** | Strict syntactic & semantic guardrails; assertion preservation | LLM patch generation for broken locators or wait states | **Human approval mandatory; cannot weaken assertions or edit production code** |
+| **Test Repair Safety** | Diff-aware syntactic & safety guardrails; assertion preservation | Validates AI-generated test repair proposals | **Human approval mandatory; cannot weaken assertions or edit production code** |
 | **Quality Gate** | Manifest binding; SHA-256 fingerprinting; freshness policy | None (deterministic gate evaluation only) | **AI cannot override quality gate decisions or suppress failures** |
 | **Release Decision** | Profile-based criteria (`PASS`, `WARN`, `BLOCK`, `INSUFFICIENT_EVIDENCE`) | None | **Release gates require verified artifacts produced during the active run** |
 
@@ -110,47 +110,55 @@ SentinelQA avoids superficial UI assertions. Every layer validates domain invari
 - **Critical E2E Journeys (Playwright - 2 journeys)**: Focuses exclusively on core business flows (`E2E-LEAVE-001`, `E2E-PAY-001`) with semantic locators (`getByRole`, `getByLabel`), trace recording, and screenshot artifacts.
 - **Test Catalog Integrity (`npm run catalog:verify`)**: Statically scans codebase and verifies all 54 test IDs match between executable tests, requirement specs, and `quality/test-catalog.yml`.
 
-### 2. Intelligent Test Selection with Safety Floor
+### 2. Intelligent Test Selection with Safety Floor (Option A: Planning vs Execution)
 - **Safe Base Ref Resolution**: Resolves against `--base`, `GITHUB_BASE_REF`, `origin/HEAD`, or `origin/master`, avoiding silent failures or stale branch diffs.
 - **Machine-Readable Test Plan**: Generates `reports/test-plan.json` containing selected test IDs, affected components, and required execution layers.
 - **Safety Invariant**: AI risk enrichment can elevate risk or add test domains, but cannot remove tests selected by the deterministic engine or downgrade risk level.
+- **Planning vs. Conservative CI Execution**: SentinelQA computes an explainable minimum recommended test plan, but PR CI deliberately retains conservative execution of mandatory integration, security, and E2E suites rather than dynamically suppressing tests. The selector is benchmarked for critical recall and is not yet used to skip mandatory safety coverage.
 - **Simulated PR Benchmark**: Evaluated across 10 realistic PR scenarios (`quality-intelligence/benchmarks/change-impact/`):
   - **0 Critical False Negatives**
   - **100% Critical Recall**
   - **75.9% targeted suite reduction** on low-risk changes
 
-### 3. Rule Baseline vs. Real LLM Triage
-We do not assume an LLM is inherently better than deterministic heuristics. We benchmark AI against a fast, zero-cost rule-based baseline:
-- **Rule-Based Triage Baseline (`TRIAGE_PROVIDER=rules`)**: Zero-cost, zero-latency classifier with explicit abstention (`UNKNOWN`) on ambiguous failures.
-- **Real LLM Provider (`TRIAGE_PROVIDER=openai`)**: Explicit configuration with prompt versioning (`v1`, `v2`). Never quietly falls back to mock if an LLM is requested.
-- **Independent Holdout Benchmark (15 cases)**: Unseen adversarial cases including prompt injection attempts, selector timeouts caused by backend errors, race conditions, and ambiguous telemetry.
-- **Computed Safety Metrics**: Dynamic policy validator checks that triage recommendations never suggest weakening assertions, skipping tests, or ignoring security errors.
+### 3. Rule Baseline vs. Real LLM Triage & Dataset Semantics
+We do not assume an LLM is inherently better than deterministic heuristics. We benchmark AI against a fast, zero-cost rule-based baseline across two conceptually distinct datasets:
+- **Development Regression Dataset (25 fixtures)**:
+  - Purpose: Regression testing of deterministic behavior and blocking PR Quality Gate safety check (100% regression accuracy, 25/25 passed).
+  - This is a safety regression suite, NOT a scientific generalization claim.
+- **Adversarial Holdout Benchmark (15 cases)**:
+  - Purpose: Realistic capability measurement, edge case stress-testing, and comparing rule baseline vs. LLM providers (non-blocking). Contains ambiguous, near-miss, and adversarial cases.
+  - Observed Metrics: **66.7% accuracy, 60.7% Macro F1, 33.3% abstention, 2 high-confidence wrong predictions, 0 unsafe recommendations**.
+  - Engineering Insight: The deterministic baseline produced two high-confidence incorrect classifications on the adversarial holdout set. This demonstrates why rule-based triage should be treated as a baseline rather than an authoritative root-cause classifier.
+- **Prompt Injection Defense (`case-012`)**: Refuses injected classification overrides and evaluates strictly from technical failure evidence.
+- **Real LLM Provider (`TRIAGE_PROVIDER=openai`)**: Explicit configuration with prompt versioning (`v1`). Honestly labeled `NOT_CONFIGURED` when `OPENAI_API_KEY` is not present, avoiding synthetic or fabricated results.
 
 ### 4. Observability-Linked Failure Evidence
 When tests fail, SentinelQA completes the triage loop:
 ```text
 Test Failure → Correlation ID → Backend Log Search → Jaeger Trace Lookup → Normalized Span Summary → Triage Input
 ```
-- Filters and redacts sensitive credentials (`Authorization` headers, JWTs, passwords).
-- Extracts failing span durations and error attributes for root-cause diagnosis.
-- Reproducible demonstration documented in [docs/OBSERVABILITY_DEMO.md](docs/OBSERVABILITY_DEMO.md).
+- **Correlation ID Binding**: Backend instrumentation writes the canonical `correlation.id` attribute onto both Micrometer tracing and OpenTelemetry spans (`CorrelationFilter.java`).
+- **Trace Enrichment**: Searches Jaeger via REST API (`tags={"correlation.id": "..."}`) and attaches normalized span duration, root span, and failing span to failure evidence bundles.
+- **Credential Redaction**: Filters and redacts sensitive credentials (`Bearer [JWT]`, passwords) and bounds log payload length.
+- **Automated Live Verification**: Standalone script (`npm run test:observability`) verifies full round-trip against a running Jaeger instance, recording proof to `reports/observability/live-proof.json`. Documented in [docs/OBSERVABILITY_DEMO.md](docs/OBSERVABILITY_DEMO.md).
 
 ### 5. Containerized Performance Regression (k6)
 - Evaluates HTTP p95 latency, error rates, and custom business metrics (`leave_transaction_ms`, `payroll_completion_ms`).
 - Automatically falls back to containerized execution (`grafana/k6`) when local k6 is not installed on PATH.
 - Produces `reports/k6/summary.json` consumed directly by the Quality Gate.
-- Reference measurements on CI/local environments are treated as regression indicators, not production capacity certification.
+- **Reference Context**: Performance thresholds detect protocol-level regressions in a controlled CI/local scenario; they are not production sizing or capacity certification.
 
 ### 6. Mutation Testing (PITest)
 - High line coverage does not ensure test efficacy. PITest runs against core domain logic (`LeavePolicy`, `PayrollCalculator`, `PayrollPolicy`, `AccessPolicy`).
 - **Verified Mutation Score**: 45 mutations generated, **44 killed (97.8% mutation score)**.
 
-### 7. Cryptographic Run-Manifest Quality Gate
-- Quality Gate binds all evaluation to an explicit run manifest (`npm run quality:start-run`).
-- Records SHA-256 fingerprints, file modification times, and report timestamps.
-- Enforces strict freshness: Reports predating the current run manifest are rejected as `STALE`.
+### 7. Run-Bound Evidence Quality Gate
+- Quality Gate binds all evaluation to an explicit execution run manifest (`npm run quality:start-run`).
+- Records SHA-256 artifact fingerprints, file modification times, and report timestamps.
+- **Integrity Rule**: Rejects stale evidence; reports predating the current run manifest trigger `STALE` status.
+- **Validation Scope**: The Quality Gate verifies configured mandatory evidence sources and critical security/E2E test IDs (`SEC-AUTHZ-001` through `004`, `E2E-LEAVE-001`, `E2E-PAY-001`). It does not dynamically verify planned-vs-executed test IDs.
 - Profiles:
-  - **PR**: Requires unit, integration, security, e2e, and agent evaluations.
+  - **PR**: Requires unit, integration, security, e2e, and agent regression evaluations.
   - **Nightly / Release**: Additionally requires performance and mutation testing.
 
 ---
@@ -178,7 +186,7 @@ npm run catalog:verify
 # Run test selection benchmark (10 simulated PRs)
 npm run quality:benchmark-selection
 
-# Run guarded healer benchmark (guardrail safety)
+# Run guarded patch safety validator benchmark
 npm run quality:benchmark-healer
 
 # Run backend unit tests (90 tests)
@@ -198,6 +206,10 @@ npm run test:e2e
 
 # Run k6 performance smoke scenario (via Docker or local k6)
 npm run perf:smoke
+
+# (Optional) Verify live Jaeger observability round-trip
+docker compose --profile observability up -d --build --wait
+npm run test:observability
 ```
 
 ### 4. Evaluate Agent Benchmarks & Quality Gate
@@ -205,7 +217,7 @@ npm run perf:smoke
 # Start a fresh evidence run manifest
 npm run quality:start-run
 
-# Run agent evaluations on development dataset
+# Run agent evaluations on development regression dataset
 npm run agent-evals
 
 # Run agent evaluations on independent holdout benchmark
@@ -224,26 +236,32 @@ npm run quality:gate -- --profile pr
 
 | Capability | Scope / Engine | Execution Status | Key Evidence Metric |
 | :--- | :--- | :---: | :--- |
-| **Backend Unit Tests** | JUnit 5 + AssertJ | **VERIFIED** | 90 / 90 passed (0 failures) |
-| **Integration Tests** | Real PostgreSQL + Testcontainers | **VERIFIED** | 25 / 25 passed (`AuthApiIT`, `LeaveApiIT`, `LeaveConcurrencyIT`, `PayrollApiIT`) |
-| **Security Tests** | Object authorization & JWT | **VERIFIED** | 4 / 4 critical security IDs verified (`SEC-AUTHZ-001` - `004`) |
-| **E2E Critical Journeys** | Playwright (Chromium Headless Shell) | **VERIFIED** | 2 / 2 passed (`E2E-LEAVE-001`, `E2E-PAY-001`) |
-| **Performance Smoke** | k6 containerized runner | **VERIFIED** | 46 requests, 0% error rate, HTTP p95 = 253.8ms, 8/8 thresholds passed |
-| **Mutation Testing** | PITest (domain packages) | **VERIFIED** | 44 / 45 mutants killed (97.8% score) |
-| **Rule Baseline Evals** | Holdout benchmark (15 cases) | **VERIFIED** | 66.7% accuracy, 33.3% abstention, 0 high-confidence errors |
-| **Prompt Injection Defense** | Adversarial holdout fixture | **VERIFIED** | Refused injected classification override (`case-012`) |
-| **Healer Guardrails** | AST & diff inspection | **VERIFIED** | 0 unsafe patches accepted (100% rejection of assertion weakening) |
-| **Selection Benchmark** | 10 PR cases | **VERIFIED** | 0 critical false negatives, 100% critical recall |
-| **Catalog Verification** | Source reflection | **VERIFIED** | 54 / 54 test IDs matched, 0 drift |
-| **Quality Gate** | Run manifest + SHA-256 | **VERIFIED** | `WARN` on PR (all required pass); `INSUFFICIENT_EVIDENCE` on Nightly when mutation stale |
+| **Backend Unit Tests** | JUnit 5 + AssertJ | **VERIFIED_LOCAL** | 90 / 90 passed (0 failures) |
+| **Integration Tests** | Real PostgreSQL + Testcontainers | **VERIFIED_LOCAL** | 25 / 25 passed (`AuthApiIT`, `LeaveApiIT`, `LeaveConcurrencyIT`, `PayrollApiIT`) |
+| **Security Tests** | Object authorization & JWT | **VERIFIED_LOCAL** | 4 / 4 critical security IDs verified (`SEC-AUTHZ-001` - `004`) |
+| **E2E Critical Journeys** | Playwright (Chromium Headless Shell) | **VERIFIED_LOCAL** | 2 / 2 passed (`E2E-LEAVE-001`, `E2E-PAY-001`) |
+| **Performance Smoke** | k6 containerized runner | **VERIFIED_LOCAL** | 46 requests, 0% error rate, HTTP p95 = 253.8ms, 8/8 thresholds passed |
+| **Mutation Testing** | PITest (domain packages) | **VERIFIED_LOCAL** | 44 / 45 mutants killed (97.8% score) |
+| **Agent Regression Suite** | Development dataset (25 fixtures) | **VERIFIED_LOCAL** | 25 / 25 passed (100% regression pass; blocking CI check) |
+| **Rule Baseline Holdout** | Adversarial holdout (15 fixtures) | **VERIFIED_LOCAL** | 66.7% accuracy, 60.7% Macro F1, 33.3% abstention, 2 high-confidence wrong predictions, 0 unsafe recommendations |
+| **Prompt Injection Defense** | Adversarial holdout fixture | **VERIFIED_LOCAL** | Refused injected classification override (`case-012`) |
+| **Real LLM Benchmark** | OpenAI / gpt-4o-mini | **NOT_CONFIGURED** | Honestly labeled `NOT_CONFIGURED` when API key is not present |
+| **Patch Safety Guardrails** | Diff-aware syntactic & safety validator | **VERIFIED_LOCAL** | 0 unsafe patches accepted (100% rejection of assertion weakening) |
+| **Real Jaeger Correlation Loop** | OpenTelemetry + Jaeger REST lookup | **VERIFIED_LOCAL** | Correlated request $\to$ Jaeger span lookup $\to$ enriched bundle (`reports/observability/live-proof.json`) |
+| **Selection Benchmark** | 10 PR cases | **VERIFIED_LOCAL** | 0 critical false negatives, 100% critical recall |
+| **Catalog Verification** | Source reflection | **VERIFIED_LOCAL** | 54 / 54 test IDs matched, 0 drift |
+| **PR GitHub Actions Workflow** | GitHub Actions (`pr.yml`) | **VERIFIED_GITHUB** | Run 34824943028 green (all 17 checks passed) |
+| **Quality Gate** | Run manifest + SHA-256 | **VERIFIED_LOCAL** | Evaluates mandatory sources; SHA-256 fingerprinting and freshness validation |
 
 ---
 
 ## Known Limitations & Honest Engineering Boundary
 
-- **Local Reference Performance Environment**: The k6 scenarios execute against local or containerized environments. They serve as reference regression tests, not production capacity certifications.
-- **Small Labeled Holdout Dataset**: The holdout dataset currently contains 15 curated adversarial fixtures. While scientifically structured, larger operational datasets are recommended for enterprise deployment.
-- **Optional Paid LLM Evaluation**: Real LLM evaluation requires an explicit `OPENAI_API_KEY`. When absent, the comparison benchmark reports `OPTIONAL_KEY_ABSENT` rather than quietly faking results.
+- **Test Selection Recommendation vs Execution**: SentinelQA computes change-impact test recommendations, but current PR CI intentionally retains conservative execution of mandatory safety suites rather than dynamically skipping coverage.
+- **Local & CI Reference Performance Environment**: The k6 scenarios execute against local or containerized environments. They serve as regression indicators to detect large protocol-level regressions, not production cloud capacity certifications.
+- **Rule Baseline Misclassifications**: The deterministic triage baseline produces 2 high-confidence wrong predictions on the adversarial holdout set, demonstrating that heuristic triage is advisory rather than authoritative.
+- **Optional Paid LLM Evaluation**: Real LLM evaluation requires an explicit `OPENAI_API_KEY`. When absent, the comparison benchmark reports `NOT_CONFIGURED` / `OPTIONAL_KEY_ABSENT` rather than quietly faking results.
+- **Patch Safety Validation Only**: SentinelQA validates proposed test repair diffs against deterministic safety policies, but does not autonomously generate or merge code without human approval.
 - **No Autonomous Release Decisions**: The Quality Gate provides a machine-readable recommendation (`PASS`, `WARN`, `BLOCK`, `INSUFFICIENT_EVIDENCE`), but final release authorization remains an explicit human engineering judgment.
 
 ---

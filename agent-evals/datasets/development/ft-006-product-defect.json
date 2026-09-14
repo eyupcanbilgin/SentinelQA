@@ -1,0 +1,17 @@
+{
+  "id": "FT-006",
+  "notes": "Manager approval bypass seed activated",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "leave",
+  "evidence": {
+    "testId": "API-LEAVE-004",
+    "testName": "API-LEAVE-004 manager cannot approve unrelated employee",
+    "layer": "api",
+    "component": "leave",
+    "httpStatus": 500,
+    "errorMessage": "IllegalStateException: finalized payroll or leave rule failed: business invariant violated in manager check",
+    "backendLogs": [
+      "[ERROR] Leave request approved despite manager not managing employee: business invariant violated"
+    ]
+  }
+}

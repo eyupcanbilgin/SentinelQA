@@ -1,0 +1,18 @@
+{
+  "id": "FT-005",
+  "notes": "Object authorization leak allowing employee to read peers salary",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "auth",
+  "evidence": {
+    "testId": "SEC-AUTHZ-001",
+    "testName": "SEC-AUTHZ-001 employee cannot access another employee restricted data",
+    "layer": "security",
+    "component": "auth",
+    "httpStatus": 500,
+    "errorMessage": "Expected HTTP 403 Forbidden but received HTTP 500 status code: 500 with DomainException",
+    "backendLogs": [
+      "[ERROR] Unhandled security policy violation when employee-1 accessed employee-2"
+    ],
+    "correlationId": "sec-breach-001"
+  }
+}

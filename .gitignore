@@ -8,6 +8,7 @@ node_modules/
 .tools/
 artifacts/
 reports/
+!reports/observability/live-proof.json
 **/test-results/
 **/playwright-report/
 *.log

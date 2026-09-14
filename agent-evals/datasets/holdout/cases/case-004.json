@@ -1,0 +1,16 @@
+{
+  "id": "case-004",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "INT-EMP-002",
+    "testName": "concurrentEmployeeCreation",
+    "errorMessage": "ERROR: duplicate key value violates unique constraint \"users_email_key\"\nDetail: Key (email)=(employee_concurrent@example.test) already exists.",
+    "httpStatus": 500,
+    "component": "backend",
+    "backendLogs": [
+      "ERROR o.h.e.jdbc.batch.internal.BatchingBatch - HHH000315: Exception executing batch [insert into users...]",
+      "WARN i.s.w.employee.EmployeeService - Missing pessimistic concurrency lock on email uniqueness validation"
+    ],
+    "layer": "integration"
+  }
+}

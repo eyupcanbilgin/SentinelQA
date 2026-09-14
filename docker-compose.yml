@@ -58,6 +58,17 @@ services:
       retries: 12
       start_period: 5s
 
+  k6:
+    image: grafana/k6:0.57.0
+    profiles: [perf]
+    user: "0:0"
+    volumes:
+      - ./performance:/performance:ro
+      - ./reports/k6:/reports/k6
+    environment:
+      - BASE_URL=http://backend:8080
+      - DEMO_PASSWORD=LocalDemo!2026
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.160.0@sha256:799dc6cf12c96192af37b5bdba804da8c10b3bc563b43cb90c3f3c58d9572ad6
     profiles: [observability]

@@ -1,0 +1,15 @@
+{
+  "id": "case-005",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "API-AUTH-001",
+    "testName": "userAuthentication",
+    "errorMessage": "503 Service Unavailable: Gateway routing maintenance in progress",
+    "httpStatus": 503,
+    "component": "infrastructure",
+    "networkLogs": [
+      "POST /api/auth/login -> 503 Service Unavailable (x-gateway-state: maintenance-window)"
+    ],
+    "layer": "api"
+  }
+}

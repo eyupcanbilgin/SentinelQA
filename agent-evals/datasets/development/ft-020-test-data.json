@@ -1,0 +1,18 @@
+{
+  "id": "FT-020",
+  "notes": "Unique constraint collision on duplicate payroll period",
+  "expectedClassification": "TEST_DATA",
+  "expectedComponent": "database",
+  "evidence": {
+    "testId": "API-PAY-002",
+    "testName": "API-PAY-002 reject duplicate payroll period",
+    "layer": "api",
+    "component": "database",
+    "httpStatus": 409,
+    "errorMessage": "DataIntegrityViolationException: duplicate key value violates unique constraint \"idx_payroll_runs_period\". Period \"2026-09\" already created by prior test run.",
+    "stackTrace": "org.springframework.dao.DataIntegrityViolationException: duplicate key value violates unique constraint\n  at PayrollRunRepository.save",
+    "backendLogs": [
+      "[ERROR] Pre-existing test data collision for period 2026-09: seed conflict"
+    ]
+  }
+}

@@ -47,7 +47,7 @@ export function selectTests(changedFiles: string[], rawCatalog: unknown, rawMap:
   });
   return { schemaVersion: '1.0', generatedAt: new Date().toISOString(), changedFiles: files,
     affectedComponents: [...affected].sort(), unmappedFiles: unknown, sharedFiles: shared,
-    incompleteCatalog, riskLevel: score >= 15 ? 'HIGH' : score >= 6 ? 'MEDIUM' : 'LOW', score,
+    incompleteCatalog, riskLevel: (score >= 15 ? 'HIGH' : score >= 6 ? 'MEDIUM' : 'LOW') as 'HIGH' | 'MEDIUM' | 'LOW', score,
     confidence: broaden ? 0 : 1, runBroaderSuite: broaden, selectedTests,
     requiredSuites: [...new Set(selectedTests.map(t => t.layer))].sort(),
     reasoningSummary: broaden ? ['Selection uncertainty expands coverage; AI cannot remove tests.'] :

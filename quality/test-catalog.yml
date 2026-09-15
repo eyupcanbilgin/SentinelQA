@@ -320,6 +320,51 @@
       "source": "tests/e2e/specs/payroll.spec.ts"
     },
     {
+      "id": "INT-DATA-001",
+      "name": "fresh default startup creates schema without demo identities",
+      "layer": "integration",
+      "components": [
+        "employees"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "DATA-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/DemoProvisioningIT.java"
+    },
+    {
+      "id": "INT-DATA-002",
+      "name": "explicit demo startup provisions documented users once across restart",
+      "layer": "integration",
+      "components": [
+        "employees"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "DATA-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/DemoProvisioningIT.java"
+    },
+    {
+      "id": "INT-DATA-003",
+      "name": "normal startup refuses a database with recorded demo provisioning",
+      "layer": "integration",
+      "components": [
+        "employees"
+      ],
+      "tags": [
+        "critical"
+      ],
+      "requirements": [
+        "DATA-001"
+      ],
+      "source": "backend/src/test/java/io/sentinelqe/workforce/DemoProvisioningIT.java"
+    },
+    {
       "id": "INT-LEAVE-001",
       "name": "concurrent requests cannot reserve more leave than the available balance",
       "layer": "integration",

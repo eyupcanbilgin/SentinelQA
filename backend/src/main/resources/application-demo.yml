@@ -1,3 +1,6 @@
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/demo
 app:
   jwt:
     secret: ${JWT_SECRET:sentinelqe-demo-only-signing-key-2026-never-production}

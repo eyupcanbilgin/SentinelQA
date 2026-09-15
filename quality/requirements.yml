@@ -76,6 +76,15 @@
         "UNIT-PAY-007"
       ]
     },
+    "DATA-001": {
+      "description": "Flyway-managed PostgreSQL constraints and transactions preserve domain relationships.",
+      "risk": "high",
+      "tests": [
+        "INT-DATA-001",
+        "INT-DATA-002",
+        "INT-DATA-003"
+      ]
+    },
     "QUALITY-001": {
       "description": "Selection, triage and release recommendations validate evidence and broaden or abstain when uncertain.",
       "risk": "high",

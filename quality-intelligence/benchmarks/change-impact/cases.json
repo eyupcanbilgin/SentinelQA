@@ -1,0 +1,92 @@
+[
+  {
+    "id": "PR-001",
+    "name": "CSS-only cosmetic change",
+    "changedFiles": ["frontend/src/index.css"],
+    "expectedComponents": ["frontend"],
+    "expectedRisk": "MEDIUM",
+    "mandatoryTests": ["API-AUTH-001", "QI-SELECT-001", "E2E-LEAVE-001", "E2E-PAY-001"],
+    "broadenExpected": false
+  },
+  {
+    "id": "PR-002",
+    "name": "Leave policy business logic change",
+    "changedFiles": ["backend/src/main/java/io/sentinelqe/workforce/leave/LeaveService.java"],
+    "expectedComponents": ["leave"],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["UNIT-LEAVE-001", "API-LEAVE-001", "INT-LEAVE-001"],
+    "broadenExpected": false
+  },
+  {
+    "id": "PR-003",
+    "name": "Payroll calculator change",
+    "changedFiles": ["backend/src/main/java/io/sentinelqe/workforce/payroll/PayrollCalculator.java"],
+    "expectedComponents": ["payroll"],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["UNIT-PAY-001", "API-PAY-001", "API-PAY-004"],
+    "broadenExpected": false
+  },
+  {
+    "id": "PR-004",
+    "name": "Security configuration change",
+    "changedFiles": ["backend/src/main/java/io/sentinelqe/workforce/config/SecurityConfig.java"],
+    "expectedComponents": ["authorization"],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["SEC-AUTHZ-001", "SEC-AUTHZ-002", "SEC-AUTHZ-003", "SEC-AUTHZ-004", "API-AUTH-001"],
+    "broadenExpected": false
+  },
+  {
+    "id": "PR-005",
+    "name": "Database migration",
+    "changedFiles": ["backend/src/main/resources/db/migration/V3__new_column.sql"],
+    "expectedComponents": [],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["API-AUTH-001", "INT-LEAVE-001", "API-PAY-003"],
+    "broadenExpected": true
+  },
+  {
+    "id": "PR-006",
+    "name": "Shared exception handler change",
+    "changedFiles": ["backend/src/main/java/io/sentinelqe/workforce/common/GlobalExceptionHandler.java"],
+    "expectedComponents": [],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["API-AUTH-001", "API-PAY-001", "API-LEAVE-001"],
+    "broadenExpected": true
+  },
+  {
+    "id": "PR-007",
+    "name": "Test infrastructure change",
+    "changedFiles": ["backend/src/test/java/io/sentinelqe/workforce/PostgresIT.java"],
+    "expectedComponents": ["quality"],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["API-AUTH-001", "QI-SELECT-001"],
+    "broadenExpected": true
+  },
+  {
+    "id": "PR-008",
+    "name": "Unknown or unmapped source file",
+    "changedFiles": ["unknown/legacy/Helper.java"],
+    "expectedComponents": [],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["API-AUTH-001", "QI-SELECT-001"],
+    "broadenExpected": true
+  },
+  {
+    "id": "PR-009",
+    "name": "Documentation-only change",
+    "changedFiles": ["docs/README.md"],
+    "expectedComponents": ["documentation"],
+    "expectedRisk": "LOW",
+    "mandatoryTests": ["API-AUTH-001", "QI-SELECT-001"],
+    "broadenExpected": false
+  },
+  {
+    "id": "PR-010",
+    "name": "Authentication & JWT handler change",
+    "changedFiles": ["backend/src/main/java/io/sentinelqe/workforce/auth/TokenProvider.java"],
+    "expectedComponents": ["authorization"],
+    "expectedRisk": "HIGH",
+    "mandatoryTests": ["SEC-AUTHZ-001", "API-AUTH-001"],
+    "broadenExpected": false
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "id": "case-014",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "API-AUTH-002",
+    "testName": "expiredTokenRejection",
+    "errorMessage": "401 Unauthorized: JWT expired at 2026-09-10T12:00:00Z (current time: 2026-09-14T10:00:00Z)",
+    "httpStatus": 401,
+    "component": "test-fixtures",
+    "backendLogs": [
+      "DEBUG i.s.w.auth.TokenProvider - Token expired: claims exp was 2026-09-10"
+    ],
+    "layer": "api"
+  }
+}

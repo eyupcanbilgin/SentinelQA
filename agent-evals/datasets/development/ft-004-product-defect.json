@@ -1,0 +1,19 @@
+{
+  "id": "FT-004",
+  "notes": "NullPointerException when manager reference is unassigned",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "employee",
+  "evidence": {
+    "testId": "API-EMP-002",
+    "testName": "API-EMP-002 employee detail view with null manager",
+    "layer": "api",
+    "component": "employee",
+    "httpStatus": 500,
+    "errorMessage": "Internal Server Error: NullPointerException in EmployeeController.java:45",
+    "stackTrace": "java.lang.NullPointerException: Cannot invoke Employee.getId() because manager is null\n  at io.sentinelqe.workforce.employee.EmployeeController.get(EmployeeController.java:45)",
+    "backendLogs": [
+      "[ERROR] Unhandled NullPointerException in EmployeeController"
+    ],
+    "correlationId": "req-emp-null-mgr"
+  }
+}

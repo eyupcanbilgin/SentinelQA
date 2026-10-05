@@ -1,0 +1,18 @@
+{
+  "id": "FT-019",
+  "notes": "Missing seed entity: employee record not found for test",
+  "expectedClassification": "TEST_DATA",
+  "expectedComponent": "database",
+  "evidence": {
+    "testId": "API-LEAVE-001",
+    "testName": "API-LEAVE-001 create valid leave request",
+    "layer": "api",
+    "component": "database",
+    "httpStatus": 404,
+    "errorMessage": "EntityNotFoundException: Employee with id e0000000-0000-0000-0000-000000000099 not found. Missing seed data.",
+    "stackTrace": "jakarta.persistence.EntityNotFoundException: Employee not found\n  at io.sentinelqe.workforce.employee.EmployeeRepository.getReferenceById",
+    "backendLogs": [
+      "[WARN] Test query failed: stale data entity not found"
+    ]
+  }
+}

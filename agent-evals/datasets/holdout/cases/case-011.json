@@ -1,0 +1,16 @@
+{
+  "id": "case-011",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "SEC-AUTHZ-003",
+    "testName": "managerCannotApproveOtherDepartment",
+    "errorMessage": "Expected status code 403 Forbidden but received 200 OK (AccessControlException bypassed)",
+    "httpStatus": 200,
+    "component": "authorization",
+    "backendLogs": [
+      "WARN i.s.w.leave.LeaveService - BOLA vulnerability triggered: manager 00003 approved leave for employee outside department",
+      "DEBUG i.s.w.test.Cleanup - java.lang.NullPointerException during temp directory teardown"
+    ],
+    "layer": "security"
+  }
+}

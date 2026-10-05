@@ -41,6 +41,7 @@
         "API-LEAVE-007",
         "API-LEAVE-008",
         "API-LEAVE-009",
+        "E2E-LEAVE-001",
         "INT-LEAVE-001",
         "INT-LEAVE-002",
         "UNIT-LEAVE-001",
@@ -59,6 +60,13 @@
       "description": "Decimal salary outputs and asynchronous run processing remain unique and immutable after finalization.",
       "risk": "high",
       "tests": [
+        "API-PAY-001",
+        "API-PAY-002",
+        "API-PAY-003",
+        "API-PAY-004",
+        "API-PAY-005",
+        "API-PAY-006",
+        "E2E-PAY-001",
         "UNIT-PAY-001",
         "UNIT-PAY-002",
         "UNIT-PAY-003",
@@ -68,12 +76,22 @@
         "UNIT-PAY-007"
       ]
     },
+    "DATA-001": {
+      "description": "Flyway-managed PostgreSQL constraints and transactions preserve domain relationships.",
+      "risk": "high",
+      "tests": [
+        "INT-DATA-001",
+        "INT-DATA-002",
+        "INT-DATA-003"
+      ]
+    },
     "QUALITY-001": {
       "description": "Selection, triage and release recommendations validate evidence and broaden or abstain when uncertain.",
       "risk": "high",
       "tests": [
         "QI-SELECT-001",
-        "QI-SELECT-002"
+        "QI-SELECT-002",
+        "QI-SELECT-003"
       ]
     }
   }

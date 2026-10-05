@@ -1,0 +1,20 @@
+{
+  "id": "FT-013",
+  "notes": "Nginx reverse proxy returned 502 Bad Gateway",
+  "expectedClassification": "ENVIRONMENT",
+  "expectedComponent": "infrastructure",
+  "evidence": {
+    "testId": "E2E-SMOKE-001",
+    "testName": "E2E-SMOKE-001 frontend loads workforce dashboard",
+    "layer": "e2e",
+    "component": "infrastructure",
+    "httpStatus": 502,
+    "errorMessage": "Navigation failed: received HTTP 502 Bad Gateway from reverse proxy",
+    "networkLogs": [
+      "GET /api/health -> 502 Bad Gateway"
+    ],
+    "backendLogs": [
+      "[nginx] 2026/09/14 connect() failed (111: Connection refused) while connecting to upstream"
+    ]
+  }
+}

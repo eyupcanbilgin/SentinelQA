@@ -1,0 +1,15 @@
+{
+  "id": "FT-010",
+  "notes": "Assertion expecting stale legacy error message string",
+  "expectedClassification": "TEST_DEFECT",
+  "expectedComponent": "api-tests",
+  "evidence": {
+    "testId": "API-EMP-003",
+    "testName": "API-EMP-003 invalid email format validation",
+    "layer": "api",
+    "component": "api-tests",
+    "httpStatus": 400,
+    "errorMessage": "AssertionError: expect(received).to equal \"Email is malformed\". Received \"must be a well-formed email address\"",
+    "stackTrace": "AssertionError: expect(received).to equal\n  at EmployeeApiIT.java:88"
+  }
+}

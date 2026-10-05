@@ -1,0 +1,15 @@
+{
+  "id": "case-008",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "E2E-LEAVE-001",
+    "testName": "requestLeaveFlow",
+    "errorMessage": "Timeout 10000ms exceeded waiting for getByRole(\"button\", { name: \"Submit Request\" })",
+    "component": "frontend-tests",
+    "consoleLogs": [
+      "Warning: [Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated",
+      "Note: button label was updated to \"Request leave\" in release v2.1"
+    ],
+    "layer": "e2e"
+  }
+}

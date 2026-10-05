@@ -33,7 +33,7 @@ public class LeaveService {
         boolean allowed=r.getStatus()==LeaveStatus.PENDING_MANAGER?managerAllowed(actor,e):AccessPolicy.canHrApprove(actor.role(),actor.employeeId(),e.getId());
         if(!allowed)throw DomainException.forbidden();r.reject();balance(e.getId()).release(r.getDays());audit.record(actor.employeeId(),"LEAVE_REJECTED","leave",id);return LeaveView.of(r,e.getName());
     }
-    @Transactional(readOnly=true) public int available(Actor actor){return balances.findById(actor.employeeId()).orElseThrow(DomainException::notFound).spendableDays();}
+    @Transactional(readOnly=true) public int available(Actor actor){return balances.findById(actor.employeeId()).orElseThrow(DomainException::notFound).getAvailableDays();}
     private boolean managerAllowed(Actor a,Employee e){return AccessPolicy.canManagerApprove(a.role(),a.employeeId(),e.getId(),e.getManagerId())||(defects.bypassManager()&&a.role()==Role.MANAGER&&!a.employeeId().equals(e.getId()));}
     private LeaveRequest locked(UUID id){return requests.lockById(id).orElseThrow(DomainException::notFound);}
     private LeaveBalance balance(UUID id){return balances.lockByEmployeeId(id).orElseThrow(DomainException::notFound);}

@@ -1,0 +1,21 @@
+{
+  "id": "FT-022",
+  "notes": "Race condition in concurrent asynchronous notification assertion",
+  "expectedClassification": "FLAKY_TEST",
+  "expectedComponent": "payroll",
+  "evidence": {
+    "testId": "INT-PAY-004",
+    "testName": "INT-PAY-004 asynchronous payroll job completion notification",
+    "layer": "integration",
+    "component": "payroll",
+    "errorMessage": "AssertionError: expected payroll status to be COMPLETED within 100ms, but was still PROCESSING",
+    "retryHistory": {
+      "attemptCount": 3,
+      "passedOnRetry": true,
+      "intermittent": true
+    },
+    "backendLogs": [
+      "[INFO] Processing completed at 104ms"
+    ]
+  }
+}

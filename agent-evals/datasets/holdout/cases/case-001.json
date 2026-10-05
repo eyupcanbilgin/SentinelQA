@@ -1,0 +1,16 @@
+{
+  "id": "case-001",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "API-EMP-001",
+    "testName": "getEmployeeProfile",
+    "errorMessage": "500 Internal Server Error: NullPointerException in UserSessionContext.getAuthentication()",
+    "stackTrace": "at io.sentinelqe.workforce.test.FixtureSetup.loginAs(FixtureSetup.java:42)\nat io.sentinelqe.workforce.EmployeeApiIT.setup(EmployeeApiIT.java:23)",
+    "httpStatus": 500,
+    "component": "test-fixture",
+    "backendLogs": [
+      "[WARN] Request received with unparsed or null Bearer token in test harness setup"
+    ],
+    "layer": "api"
+  }
+}

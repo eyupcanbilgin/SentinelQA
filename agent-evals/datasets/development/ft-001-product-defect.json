@@ -1,0 +1,19 @@
+{
+  "id": "FT-001",
+  "notes": "Double finalization regression in payroll service",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "payroll",
+  "evidence": {
+    "testId": "API-PAY-005",
+    "testName": "API-PAY-005 reject double finalize",
+    "layer": "api",
+    "component": "payroll",
+    "httpStatus": 500,
+    "errorMessage": "Expected HTTP 409 but received HTTP 500 with DomainException: Business invariant violated: Payroll run has already been finalized",
+    "stackTrace": "io.sentinelqe.workforce.common.DomainException: Payroll run has already been finalized\n  at io.sentinelqe.workforce.payroll.PayrollService.finalize(PayrollService.java:112)",
+    "backendLogs": [
+      "[ERROR] POST /api/payroll-runs/2030-05/finalize - DomainException: double finalize invariant broken"
+    ],
+    "correlationId": "req-corr-pay-005"
+  }
+}

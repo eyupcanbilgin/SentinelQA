@@ -1,0 +1,16 @@
+{
+  "id": "case-007",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "API-PAY-003",
+    "testName": "asyncPayrollProcessing",
+    "errorMessage": "Condition with lambda expression in io.sentinelqe.workforce.PostgresIT was not fulfilled within 200 milliseconds (status was PROCESSING)",
+    "component": "payroll",
+    "retryHistory": {
+      "attemptCount": 2,
+      "passedOnRetry": true,
+      "intermittent": true
+    },
+    "layer": "api"
+  }
+}

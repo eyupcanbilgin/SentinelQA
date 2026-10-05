@@ -1,0 +1,17 @@
+{
+  "id": "FT-015",
+  "notes": "PostgreSQL database connection timed out during heavy query",
+  "expectedClassification": "ENVIRONMENT",
+  "expectedComponent": "infrastructure",
+  "evidence": {
+    "testId": "PERF-PAY-001",
+    "testName": "PERF-PAY-001 asynchronous payroll processing load",
+    "layer": "performance",
+    "component": "infrastructure",
+    "httpStatus": 504,
+    "errorMessage": "java.sql.SQLTransientConnectionException: connection timed out waiting for postgres pool connection",
+    "backendLogs": [
+      "[WARN] HikariPool connection timed out. port 5432 is congested or host unreachable"
+    ]
+  }
+}

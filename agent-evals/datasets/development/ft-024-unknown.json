@@ -1,0 +1,17 @@
+{
+  "id": "FT-024",
+  "notes": "Truncated logs with no stack trace or error message",
+  "expectedClassification": "UNKNOWN",
+  "expectedComponent": "unknown",
+  "evidence": {
+    "testId": "SYS-GEN-001",
+    "testName": "SYS-GEN-001 generic system heartbeat probe",
+    "layer": "quality",
+    "component": "unknown",
+    "errorMessage": "Ambiguous failure: process exited with status 13",
+    "backendLogs": [
+      "[DEBUG] heartbeat ticked",
+      "[INFO] shutting down worker"
+    ]
+  }
+}

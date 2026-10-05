@@ -1,0 +1,50 @@
+{
+  "verified": true,
+  "correlationId": "corr-verify-1789383427034",
+  "traceId": "366d06e709ea3d15c069090081db9b9e",
+  "telemetrySource": "jaeger",
+  "spanCount": 6,
+  "rootSpan": "authenticate bearertoken",
+  "durationMs": 6,
+  "queriedAt": "2026-09-14T10:57:08.136Z",
+  "gitCommit": "07b8f625b606a393abacd18f7b2d2f245c9fd403",
+  "command": "tsx scripts/verify-observability.ts",
+  "spans": [
+    {
+      "spanId": "c12c5633d6bf9a47",
+      "name": "authenticate bearertoken",
+      "durationMs": 1,
+      "status": "OK"
+    },
+    {
+      "spanId": "0a606a5d453bd494",
+      "name": "http get /api/employees/{id}",
+      "durationMs": 6,
+      "status": "OK"
+    },
+    {
+      "spanId": "9a7c8fbcdbe9860f",
+      "name": "security filterchain before",
+      "durationMs": 1,
+      "status": "OK"
+    },
+    {
+      "spanId": "c692582f8fe13794",
+      "name": "secured request",
+      "durationMs": 4,
+      "status": "OK"
+    },
+    {
+      "spanId": "ede7fc8dc8c9adc2",
+      "name": "authorize request",
+      "durationMs": 0,
+      "status": "OK"
+    },
+    {
+      "spanId": "b5923a98d1e79166",
+      "name": "security filterchain after",
+      "durationMs": 0,
+      "status": "OK"
+    }
+  ]
+}

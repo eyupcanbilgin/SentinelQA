@@ -1,0 +1,15 @@
+{
+  "id": "FT-008",
+  "notes": "Strict mode violation: two buttons match non-unique selector",
+  "expectedClassification": "TEST_DEFECT",
+  "expectedComponent": "frontend-tests",
+  "evidence": {
+    "testId": "E2E-PAY-001",
+    "testName": "E2E-PAY-001 admin finalizes payroll",
+    "layer": "e2e",
+    "component": "frontend-tests",
+    "errorMessage": "Error: strict mode violation: locator(\"button:has-text('Approve')\") resolved to 2 elements",
+    "stackTrace": "Error: strict mode violation in payroll.spec.ts:34",
+    "screenshotPath": "artifacts/failures/run-14/E2E-PAY-001/screenshot.png"
+  }
+}

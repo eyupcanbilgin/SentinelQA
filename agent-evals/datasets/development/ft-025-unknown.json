@@ -1,0 +1,16 @@
+{
+  "id": "FT-025",
+  "notes": "Contradictory and incomplete log dump without HTTP code or exception",
+  "expectedClassification": "UNKNOWN",
+  "expectedComponent": "unknown",
+  "evidence": {
+    "testId": "SYS-GEN-002",
+    "testName": "SYS-GEN-002 telemetry dispatch",
+    "layer": "quality",
+    "component": "unknown",
+    "errorMessage": "Ambiguous failure: pipeline canceled by operator without diagnostic payload",
+    "backendLogs": [
+      "[INFO] telemetry buffer flushed 0 entries"
+    ]
+  }
+}

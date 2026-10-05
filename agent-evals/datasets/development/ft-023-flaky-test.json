@@ -1,0 +1,18 @@
+{
+  "id": "FT-023",
+  "notes": "Intermittent failure in WebSocket status stream connection",
+  "expectedClassification": "FLAKY_TEST",
+  "expectedComponent": "frontend-tests",
+  "evidence": {
+    "testId": "E2E-PAY-002",
+    "testName": "E2E-PAY-002 live status indicator update during processing",
+    "layer": "e2e",
+    "component": "frontend-tests",
+    "errorMessage": "AssertionError: Expected status tag \"PROCESSING\" but was disconnected",
+    "retryHistory": {
+      "attemptCount": 2,
+      "passedOnRetry": true,
+      "intermittent": true
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "FT-021",
+  "notes": "Playwright test failed on first attempt due to transition animation, passed on retry",
+  "expectedClassification": "FLAKY_TEST",
+  "expectedComponent": "frontend-tests",
+  "evidence": {
+    "testId": "E2E-LEAVE-003",
+    "testName": "E2E-LEAVE-003 HR completes approval and verifies balance transition",
+    "layer": "e2e",
+    "component": "frontend-tests",
+    "errorMessage": "locator.click: Element is not visible after 2000ms animation frame",
+    "retryHistory": {
+      "attemptCount": 2,
+      "passedOnRetry": true,
+      "intermittent": true
+    },
+    "consoleLogs": [
+      "[INFO] Retry attempt 2 passed without error"
+    ]
+  }
+}

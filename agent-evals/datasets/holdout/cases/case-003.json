@@ -1,0 +1,15 @@
+{
+  "id": "case-003",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "API-PAY-004",
+    "testName": "decimalCalculationAndTotal",
+    "errorMessage": "expected: 925.92 but was: 980.00 (tax deduction: expected 246.91 but was 185.18)",
+    "httpStatus": 200,
+    "component": "payroll",
+    "backendLogs": [
+      "INFO traceId=c91204 i.s.w.payroll.PayrollCalculator - calculate base=1234.56 tax=185.18 deductions=61.73 net=980.00"
+    ],
+    "layer": "api"
+  }
+}

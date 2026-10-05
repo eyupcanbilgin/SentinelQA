@@ -1,0 +1,14 @@
+{
+  "id": "case-013",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "INT-CACHE-001",
+    "testName": "redisCacheConnection",
+    "errorMessage": "org.springframework.data.redis.RedisConnectionFailureException: Unable to connect to redis:6379; nested exception is io.netty.channel.AbstractChannel$AnnotatedConnectException: Connection refused",
+    "component": "infrastructure",
+    "backendLogs": [
+      "ERROR o.s.d.r.c.l.LettuceConnection - Connection refused to redis:6379 after 3 retries"
+    ],
+    "layer": "integration"
+  }
+}

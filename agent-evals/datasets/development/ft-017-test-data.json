@@ -1,0 +1,18 @@
+{
+  "id": "FT-017",
+  "notes": "Unique constraint collision on employee email due to missing uuid suffix",
+  "expectedClassification": "TEST_DATA",
+  "expectedComponent": "database",
+  "evidence": {
+    "testId": "API-EMP-001",
+    "testName": "API-EMP-001 create employee duplicate email fixture",
+    "layer": "api",
+    "component": "database",
+    "httpStatus": 409,
+    "errorMessage": "DataIntegrityViolationException: ERROR: duplicate key value violates unique constraint \"idx_users_email\". Key (email)=(employee1@example.test) already exists.",
+    "stackTrace": "org.springframework.dao.DataIntegrityViolationException: duplicate key value violates unique constraint\n  at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert",
+    "backendLogs": [
+      "[ERROR] SQL Error: 0, SQLState: 23505 duplicate key value violates unique constraint"
+    ]
+  }
+}

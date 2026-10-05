@@ -1,0 +1,17 @@
+{
+  "id": "FT-002",
+  "notes": "Tax calculation rounding error producing cent discrepancy",
+  "expectedClassification": "PRODUCT_DEFECT",
+  "expectedComponent": "payroll",
+  "evidence": {
+    "testId": "UNIT-PAY-001",
+    "testName": "UNIT-PAY-001 verify deterministic tax and deduction calculation",
+    "layer": "unit",
+    "component": "payroll",
+    "errorMessage": "AssertionError: tax calculation discrepancy. Expected: <246.91> but was: <246.92>",
+    "stackTrace": "java.lang.AssertionError: tax calculation discrepancy\n  at io.sentinelqe.workforce.domain.PayrollCalculatorTest.calculatesDocumentedPayrollAmounts",
+    "backendLogs": [
+      "[WARN] Tax calculation discrepancy in payroll item generation for salary 1234.56"
+    ]
+  }
+}

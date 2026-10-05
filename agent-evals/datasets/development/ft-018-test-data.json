@@ -1,0 +1,17 @@
+{
+  "id": "FT-018",
+  "notes": "Foreign key failure when inserting employee with nonexistent department",
+  "expectedClassification": "TEST_DATA",
+  "expectedComponent": "database",
+  "evidence": {
+    "testId": "INT-EMP-002",
+    "testName": "INT-EMP-002 persist employee with department",
+    "layer": "integration",
+    "component": "database",
+    "errorMessage": "org.postgresql.util.PSQLException: ERROR: insert or update on table \"employees\" violates foreign key constraint \"fk_employees_department\". Key (department_id)=(999999) is not present in table \"departments\".",
+    "stackTrace": "org.postgresql.util.PSQLException: violates foreign key constraint fk_employees_department",
+    "backendLogs": [
+      "[ERROR] Foreign key constraint violated due to pre-existing test data removal"
+    ]
+  }
+}

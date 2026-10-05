@@ -1,0 +1,17 @@
+{
+  "id": "FT-012",
+  "notes": "PostgreSQL connection refused on port 5432",
+  "expectedClassification": "ENVIRONMENT",
+  "expectedComponent": "infrastructure",
+  "evidence": {
+    "testId": "INT-PAY-001",
+    "testName": "INT-PAY-001 payroll database persistence",
+    "layer": "integration",
+    "component": "infrastructure",
+    "errorMessage": "org.postgresql.util.PSQLException: Connection to localhost:5432 refused. Check that hostname and port are correct and postmaster is accepting TCP/IP connections.",
+    "stackTrace": "org.postgresql.util.PSQLException: Connection refused\n  at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl",
+    "backendLogs": [
+      "[ERROR] HikariPool-1 - Exception during pool initialization: connection refused"
+    ]
+  }
+}

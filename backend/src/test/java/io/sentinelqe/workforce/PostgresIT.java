@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
@@ -41,7 +42,11 @@ abstract class PostgresIT {
     private static final String EXTERNAL_URL = System.getProperty("test.db.url", System.getenv("TEST_DB_URL"));
     private static PostgreSQLContainer<?> database;
 
-    @LocalServerPort private int port;
+    static {
+        Locale.setDefault(Locale.ENGLISH);
+    }
+
+    @LocalServerPort protected int port;
     @Autowired protected JdbcTemplate jdbc;
     private final Map<String, String> tokens = new HashMap<>();
 
@@ -66,6 +71,7 @@ abstract class PostgresIT {
         properties.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         properties.add("app.jwt.secret", () -> JWT_SECRET);
         properties.add("management.tracing.enabled", () -> "false");
+        properties.add("app.payroll.poll-ms", () -> "100");
     }
 
     @BeforeEach
@@ -78,8 +84,7 @@ abstract class PostgresIT {
     }
 
     protected RequestSpecification request() {
-        return given().spec(new RequestSpecBuilder().setBaseUri("http://127.0.0.1").setPort(port)
-                .setContentType(ContentType.JSON).build());
+        return given().baseUri("http://127.0.0.1").port(port).contentType(ContentType.JSON);
     }
 
     protected RequestSpecification as(String account) {

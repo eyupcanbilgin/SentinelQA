@@ -1,0 +1,11 @@
+{
+  "id": "case-010",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "UNIT-UNKNOWN-001",
+    "testName": "legacyRunnerCheck",
+    "errorMessage": "Process exited with non-zero status code 137. Diagnostic output truncated.",
+    "component": "unknown",
+    "layer": "unit"
+  }
+}

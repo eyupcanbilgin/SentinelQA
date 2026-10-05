@@ -1,0 +1,16 @@
+{
+  "id": "case-015",
+  "evidence": {
+    "schemaVersion": "1.0",
+    "testId": "E2E-LEAVE-002",
+    "testName": "rapidButtonClickIntermittent",
+    "errorMessage": "locator.click: Target closed during click animation debounce",
+    "component": "frontend-tests",
+    "retryHistory": {
+      "attemptCount": 2,
+      "passedOnRetry": true,
+      "intermittent": true
+    },
+    "layer": "e2e"
+  }
+}
